@@ -35,7 +35,6 @@ for k in range(num):
   id = int(id)
   file_name = fn.split('/')[0]
   if int(split[k][0][-1]) == 1:
-
     if not os.path.isdir(train_save_path + file_name):
       os.makedirs(os.path.join(train_save_path, file_name))
     img = Image.open(os.path.join(os.path.join(path, 'images'), images[k][0].split(' ')[1])).convert('RGB')
