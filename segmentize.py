@@ -14,7 +14,7 @@ def _extract_patch(image, mask, average_image_value=117):
     ones = np.where(mask == 1)
     h1, h2, w1, w2 = ones[0].min(), ones[0].max(), ones[1].min(), ones[1].max()
     image = Image.fromarray((patch[h1:h2, w1:w2] * 255).astype(np.uint8))
-    image_resized = image.resize((299, 299), Image.BICUBIC)
+    image_resized = image.resize((224, 224), Image.BICUBIC)
     # np.array(image.resize((299, 299), Image.BICUBIC)).astype(float) / 255
     # plt.imshow(image_resized)
     # plt.show()
@@ -50,11 +50,10 @@ def _return_superpixels(im2arr):
         # plt.imshow(mark_boundaries(img, segments_slic))
         # plt.show()
 # dataset, image_numbers, patches = [], [], []
-
 train_patches_save_path = os.path.join('data/CUB_200_2011', 'dataset/train_patches/')
-path = 'data/CUB_200_2011/dataset/train_crop/010.Red_winged_Blackbird/*'
+path = 'data/CUB_200_2011/dataset/train_crop/*/*'
 index  = 0
-shape = (299, 299)
+shape = (224, 224)
 for k in glob.glob(path):
     img = Image.open(k)
     im2arr = np.array(img.resize(shape, Image.BILINEAR))
