@@ -1,16 +1,12 @@
-# This is a sample Python script.
+from cluster import cluster_segments
+from segmentize import segment_source_images
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+# Step 0 is to download the data set and run `crop_images.py` to crop out the
+# parts of the images that actually contain the birds.
 
+# Then we split up each source image into smaller segments from that image and
+# enrich it using features detected by googlenet.
+segments = segment_source_images()
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+# Then we cluster the segments based on the detected features
+cluster_segments(segments)
