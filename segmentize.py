@@ -14,14 +14,14 @@ def _extract_patch(image, mask, average_image_value=117):
     ones = np.where(mask == 1)
     h1, h2, w1, w2 = ones[0].min(), ones[0].max(), ones[1].min(), ones[1].max()
     image = Image.fromarray((patch[h1:h2, w1:w2] * 255).astype(np.uint8))
-    image_resized = image.resize((224, 224), Image.BICUBIC)
+    image_resized = image.resize((448, 448), Image.BICUBIC)
     # np.array(image.resize((299, 299), Image.BICUBIC)).astype(float) / 255
     # plt.imshow(image_resized)
     # plt.show()
     return image_resized, patch
 
 def _return_superpixels(im2arr):
-    n_segmentss = [15, 50, 80]
+    n_segmentss = [15]
     n_params = len(n_segmentss)
     unique_masks = []
     for i in range(n_params):
@@ -50,27 +50,27 @@ def _return_superpixels(im2arr):
         # plt.imshow(mark_boundaries(img, segments_slic))
         # plt.show()
 # dataset, image_numbers, patches = [], [], []
-train_patches_save_path = os.path.join('data/CUB_200_2011', 'dataset/train_patches/')
-path = 'data/CUB_200_2011/dataset/train_crop/*/*'
-index  = 0
-shape = (224, 224)
-for k in glob.glob(path):
-    img = Image.open(k)
-    im2arr = np.array(img.resize(shape, Image.BILINEAR))
-    # Normalize pixel values to between 0 and 1.
-    im2arr = np.float32(im2arr) / 255.0
-    file_name = k.split('/')[-2]
-    print(k)
-    if not os.path.isdir(train_patches_save_path + file_name):
-        os.makedirs(os.path.join(train_patches_save_path, file_name))
-        index = 0
-    image_superpixels, image_patches = _return_superpixels(im2arr)
-    for superpixel, patch in zip(image_superpixels, image_patches):
-        index += 1
-        # print(superpixel)
-        im = superpixel
-            #Image.fromarray((superpixel * 255).astype(np.uint8))
-        im.save(os.path.join(os.path.join(train_patches_save_path, file_name), str(index)+'.jpg'))
-# sdataset, simage_numbers, spatches = \
-#     np.array(dataset), np.array(image_numbers), np.array(patches)
-# print(sdataset.shape)
+# train_patches_save_path = os.path.join('data/CUB_200_2011', 'dataset/train_patches_1/')
+# path = 'data/CUB_200_2011/dataset/train_crop/*/*'
+# index  = 0
+# shape = (448, 448)
+# for k in glob.glob(path):
+#     img = Image.open(k)
+#     im2arr = np.array(img.resize(shape, Image.BILINEAR))
+#     # Normalize pixel values to between 0 and 1.
+#     im2arr = np.float32(im2arr) / 255.0
+#     file_name = k.split('/')[-2]
+#     print(k)
+#     if not os.path.isdir(train_patches_save_path + file_name):
+#         os.makedirs(os.path.join(train_patches_save_path, file_name))
+#         index = 0
+#     image_superpixels, image_patches = _return_superpixels(im2arr)
+#     for superpixel, patch in zip(image_superpixels, image_patches):
+#         index += 1
+#         # print(superpixel)
+#         im = superpixel
+#             #Image.fromarray((superpixel * 255).astype(np.uint8))
+#         im.save(os.path.join(os.path.join(train_patches_save_path, file_name), str(index)+'.jpg'))
+# # sdataset, simage_numbers, spatches = \
+# #     np.array(dataset), np.array(image_numbers), np.array(patches)
+# # print(sdataset.shape)
