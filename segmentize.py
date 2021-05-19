@@ -66,7 +66,7 @@ def _images_in_folder(folder_glob):
             file_name = image_file_path.split('/')[-1]
             suffix = file_name.upper().replace(bird_name.upper() + '_', '')
             image_id = int(suffix.split('_')[0])
-            yield int(bird_id), image_id, Image.open(image_file_path)
+            yield int(bird_id), image_id, image_file_path,
 
 def segment_source_images(
     source_image_directory='data/CUB_200_2011/dataset/train_crop/*',
@@ -95,7 +95,8 @@ def segment_source_images(
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])
 
-    for bird_id, image_id, image in _images_in_folder(source_image_directory):
+    for bird_id, image_id, image_file_path in _images_in_folder(source_image_directory):
+        image = Image.open(image_file_path)
         im2arr = np.array(image.resize((224, 224), Image.BILINEAR))
         # Normalize pixel values to between 0 and 1.
         im2arr = np.float32(im2arr) / 255.0
@@ -111,6 +112,7 @@ def segment_source_images(
                 class_id=bird_id,
                 image_id=image_id,
                 segment_id=i,
+                source_image_path=image_file_path,
                 raw=segment_data,
                 features=features
             ))
