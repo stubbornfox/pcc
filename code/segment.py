@@ -44,9 +44,9 @@ def _return_superpixels(im2arr):
 
         return superpixels, patches
 
-def segment_images(classes = None, shape=IMAGE_SHAPE, crop_path = 'data/CUB_200_2011/dataset/train_crop'):
+def segment_images(classes = None, shape=IMAGE_SHAPE, crop_path = 'data/CUB_200_2011/dataset/test_crop'):
     path = 'data/CUB_200_2011'
-    path_segments = "preprocess-data/segments"
+    path_segments = "preprocess-data/test/segments"
     path_images = os.path.join(path, 'images.txt')
     images = []
     if not os.path.isdir(path_segments):

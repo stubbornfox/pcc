@@ -28,11 +28,11 @@ def activate():
     os.makedirs(path_activations)
 
   for file_name in glob.glob(path_segments):
-    print(file_name)
     act = []
     activate_files = file_name.replace('segments', 'activations')
     if os.path.exists(activate_files):
       continue
+    print(file_name)
     images = np.load(file_name)['arr']
     for input_image in images:
       x = np.array(input_image * 255).astype(np.uint8)
