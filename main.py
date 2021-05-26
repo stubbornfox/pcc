@@ -24,7 +24,27 @@ for cluster in clusters.values():
             bird_cluster_appearances[class_id] = {}
 
         bird_cluster_appearances[class_id][cluster.id] = appearances
+
 df = DataFrame(
-    data=[(c.id, c.num_distinct_classes, c.num_segments, list(c.contained_classes)) for c in clusters.values()],
-    columns=['id', 'num_distinct_classes', 'num_segments', 'contained_classes']
+    data=[(
+        c.id,
+        c.num_distinct_classes,
+        c.num_segments,
+        c.entropy,
+    ) for c in clusters.values()],
+    columns=['id', 'num_distinct_classes', 'num_segments', 'entropy']
+)
+
+df = df \
+    .loc[df['num_segments'] > 5] \
+    .sort_values(by=['entropy'], ascending=[True])
+
+for id in df.head(10)[['id']].to_numpy():
+    clusters[int(id)].view()
+
+chosen_class = 46
+appearances = bird_cluster_appearances[chosen_class]
+appearances = DataFrame(
+    data=[(id, num) for (id, num) in appearances.items()],
+    columns=['cluster_id', 'appearances']
 )
