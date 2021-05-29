@@ -6,6 +6,7 @@ from skimage.segmentation import slic
 from PIL import Image
 import numpy as np
 from glob import glob
+
 from torchvision.transforms import transforms
 from tqdm import tqdm
 from Segment import Segment
@@ -17,11 +18,12 @@ def _extract_segments(image, mask, average_image_value=117):
     ones = np.where(mask == 1)
     h1, h2, w1, w2 = ones[0].min(), ones[0].max(), ones[1].min(), ones[1].max()
     image = Image.fromarray((patch[h1:h2, w1:w2] * 255).astype(np.uint8))
-    image_resized = image.resize((224, 224), Image.BICUBIC)
+    image_resized = image.resize((448, 448), Image.BICUBIC)
     # np.array(image.resize((299, 299), Image.BICUBIC)).astype(float) / 255
     # plt.imshow(image_resized)
     # plt.show()
     return image_resized, patch
+
 
 def _return_superpixels(im2arr):
     n_segmentss = [15, 50, 80]
@@ -50,6 +52,7 @@ def _return_superpixels(im2arr):
 
         return superpixels, segments
 
+
 def _images_in_folder(folder_glob):
     """Iteration logic to load up each image from the birds"""
     outer_progress = tqdm(glob(folder_glob), position=0, leave=False)
@@ -67,6 +70,27 @@ def _images_in_folder(folder_glob):
             suffix = file_name.upper().replace(bird_name.upper() + '_', '')
             image_id = int(suffix.split('_')[0])
             yield int(bird_id), image_id, image_file_path,
+
+
+def _interpret_segment_batch(model, preprocessing_pipeline, batch):
+    tensors = torch.stack(
+        [preprocessing_pipeline(segment.raw) for segment in batch]
+    )
+    interpretation = None
+
+    with torch.no_grad():
+        mini_batch = tensors
+
+        def hook(module_, input_, output_):
+            nonlocal interpretation
+            interpretation = output_
+
+        registration = model.proposal_net.tidy3.register_forward_hook(hook)
+        model(mini_batch)
+        registration.remove()
+
+    for (segment, features) in zip(batch, interpretation):
+        segment.features = np.array(features).flatten()
 
 def segment_source_images(
     source_image_directory='data/CUB_200_2011/dataset/train_crop/*',
@@ -87,7 +111,9 @@ def segment_source_images(
         print('Creating image segments...')
 
     segments = []
-    model = torch.hub.load('pytorch/vision:v0.9.0', 'googlenet', pretrained=True)
+    # model = torch.hub.load('pytorch/vision:v0.9.0', 'googlenet', pretrained=True)
+    model = torch.hub.load('nicolalandro/ntsnet-cub200', 'ntsnet', pretrained=True,
+                           **{'topN': 6, 'device': 'cpu', 'num_classes': 200})
     model.eval()
     preprocessing_pipeline = transforms.Compose([
         transforms.ToTensor(),
@@ -97,16 +123,13 @@ def segment_source_images(
 
     for bird_id, image_id, image_file_path in _images_in_folder(source_image_directory):
         image = Image.open(image_file_path)
-        im2arr = np.array(image.resize((224, 224), Image.BILINEAR))
+        im2arr = np.array(image.resize((448, 448), Image.BILINEAR))
         # Normalize pixel values to between 0 and 1.
         im2arr = np.float32(im2arr) / 255.0
         superpixels, _ = _return_superpixels(im2arr)
+
         for i, segment in enumerate(superpixels):
             segment_data = np.array(segment)
-            segment_tensor = preprocessing_pipeline(segment)
-            with torch.no_grad():
-                mini_batch = segment_tensor.unsqueeze(0)
-                features = model(mini_batch)
 
             segments.append(Segment(
                 class_id=bird_id,
@@ -114,8 +137,10 @@ def segment_source_images(
                 segment_id=i,
                 source_image_path=image_file_path,
                 raw=segment_data,
-                features=features
+                features=np.array([])
             ))
+
+        _interpret_segment_batch(model, preprocessing_pipeline, segments)
 
     print("Writing checkpoint file...")
     os.makedirs(os.path.dirname(checkpoint_file), exist_ok=True)

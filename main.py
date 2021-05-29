@@ -1,5 +1,3 @@
-from collections import defaultdict
-
 from pandas import DataFrame
 
 from cluster import cluster_segments
@@ -9,7 +7,7 @@ from segmentize import segment_source_images
 # parts of the images that actually contain the birds.
 
 # Then we split up each source image into smaller segments from that image and
-# enrich it using features detected by googlenet.
+# enrich it using features detected by a cnn.
 segments = segment_source_images()
 
 # Then we cluster the segments based on the detected features
