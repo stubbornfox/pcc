@@ -45,8 +45,8 @@ def calculate_has_concepts(acts_of_img, concepts, kmeanmodel):
 def build_attributes(images_acts, concepts, kmeanmodel):
   output = []
   for acts_of_img in images_acts:
-    # output.append(calculate_has_concepts(acts_of_img, concepts, kmeanmodel))
-    output.append(calculate_vector_to_concepts(acts_of_img, concepts, kmeanmodel))
+    output.append(calculate_has_concepts(acts_of_img, concepts, kmeanmodel))
+    # output.append(calculate_vector_to_concepts(acts_of_img, concepts, kmeanmodel))
 
   return np.array(output)
 

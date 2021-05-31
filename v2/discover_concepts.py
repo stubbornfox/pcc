@@ -153,7 +153,6 @@ def _important_concepts():
                               concept_number += 1
                               tuple_concept = (concept_number, concept_idxs, centers[i], i)
                               concept_output.append(tuple_concept)
-                              print('Founddddd')
                         # concept = '{}_concept{}'.format('birds', concept_number)
                         # bn_dic['concepts'].append(concept)
                         # bn_dic[concept] = {

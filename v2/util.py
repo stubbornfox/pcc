@@ -1,7 +1,7 @@
-NUMBER_CLASS = 7
-NUMBER_CLUSTER = 70
+NUMBER_CLASS = 20
+NUMBER_CLUSTER = 200
 ERROR_IMAGES = [448, 848, 1401, 2123, 2306, 2310, 3617, 3619, 3780, 5029, 5393, 6321, 6551, 8551, 9322]
-ACCURACY_SEGMENTS = 40
+ACCURACY_SEGMENTS = 60
 import os
 from collections import defaultdict, OrderedDict
 from PIL import Image
@@ -166,7 +166,6 @@ def filter_important_concept(concepts):
     concept_number, concept_idxs, center, cluster_lbl = concept
 
 def locate_concepts_ids(img_ids):
-  print(img_ids)
   index = 0
   output = []
   for img_id in img_ids:
@@ -187,15 +186,15 @@ def load_kmean_model():
 def load_concept_accuracy(locaids, concept_idxs):
   loop_i = locaids[concept_idxs]
   total = 0
-  print(loop_i)
-  print('concept_idxs',concept_idxs)
+  # print(loop_i)
+  # print('concept_idxs',concept_idxs)
   for i in loop_i:
     index, img_id, count = i
-    print(index, img_id, count)
+    # print(index, img_id, count)
     path = "v2/data/activations/predicts/{}.npz".format(img_id)
     corrects = np.load(path)['correct']
-    print(corrects)
+    # print(corrects)
     c_correct = corrects[count]
     total += int(c_correct)
-  print('total', total)
+  # print('total', total)
   return total / len(concept_idxs) > ACCURACY_SEGMENTS / 100
