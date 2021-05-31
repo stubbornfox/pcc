@@ -42,7 +42,7 @@ def print_unique_sesgments(image_id):
 
   segment_fn = os.path.join(path_segments, "{}.npz".format(image_id))
   data = (np.load(segment_fn)['arr'] * 255).astype(np.uint8)
-  fig, ax = plt.subplots(3, 4, figsize=(10, 10), sharex=True, sharey=True)
+  fig, ax = plt.subplots(4, 4, figsize=(10, 10), sharex=True, sharey=True)
   x, y = 0, 0
   index = 0
   for segement in data:
@@ -63,18 +63,22 @@ def print_unique_sesgments(image_id):
 # print_unique_sesgments(614)
 #print_unique_sesgments(642)
 
-a = load_img_activation_outputlayer([642])[0]
-t = predict(642)
-for b, k in zip(a,t):
-  print(np.argmax(b[0]), k)
-print_unique_sesgments(642)
+# a = load_img_activation_outputlayer([642])[0]
+# t = predict(642)
+# for b, k in zip(a,t):
+#   print(np.argmax(b[0]), k)
+# print_unique_sesgments(642)
 
 def print_out_concepts():
-  concept_path = "v2/data/concept/{}_{}.npz".format(NUMBER_CLUSTER, NUMBER_CLASS)
+  concept_path = "v2/data/important_concept/{}_{}_{}.npz".format(NUMBER_CLUSTER, NUMBER_CLASS, ACCURACY_SEGMENTS)
   cl = load_concept(concept_path)
-  for i in range(5, 10):
-    _, ids, _, _ = cl[i]
-    a = load_segments(True, ids)[:48]
+  img_ids = load_images(True)
+  concept_locs = locate_concepts_ids(img_ids)
+  for i in cl:
+    _, ids, _, _ = i
+    print(len(ids))
+
+    a = load_segments(True, ids[:10], concept_locs)
 
     index = 0
 
@@ -92,3 +96,8 @@ def print_out_concepts():
     plt.show()
 
 # print_out_concepts()
+# predict_all_trained_segments()
+# predict(imgids)
+# train_images, _ = load_train_test()
+# local_concepts = locate_concepts_ids(train_images)
+print_out_concepts()

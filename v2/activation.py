@@ -12,7 +12,7 @@ import sklearn.cluster as cluster
 import torch
 from torchvision import transforms
 import time
-from util import NUMBER_CLASS, ERROR_IMAGES, read_image_class_labels, read_image_path
+from util import NUMBER_CLASS, ERROR_IMAGES, read_image_class_labels, read_image_path, load_images
 
 model = torch.hub.load('nicolalandro/ntsnet-cub200', 'ntsnet', pretrained=True,
                        **{'topN': 6, 'device': 'cpu', 'num_classes': 200})
@@ -97,35 +97,40 @@ def acts_for_images():
       np.savez_compressed(acts_fn, arr=acts, dropouts=dropouts)
       print('Finish:',image)
 
-def predict(image):
-  start_time = time.time()
 
+def predict_all_trained_segments():
   path_segments = "v2/data/segments"
+  path_activations = "v2/data/activations/predicts"
+  train_imgs = load_images(True)
 
-  segment_fn = os.path.join(path_segments, "{}.npz".format(image))
-      # acts_fn = os.path.join(path_activations, "{}.npz".format(image))
-      # print(image)
-      # if os.path.exists(acts_fn):
-      #   continue
-      # acts = []
-      # dropouts = []
-  data = (np.load(segment_fn)['arr'] * 255).astype(np.uint8)
-  output = []
-  for segement in data:
-    input_tensor = preprocess(segement)
-    input_batch = input_tensor.unsqueeze(0)
+  if not os.path.isdir(path_activations):
+    os.makedirs(path_activations)
 
-    # model.pretrained_model.dropout.register_forward_hook(get_activation('dropout'))
-    top_n_coordinates, concat_out, raw_logits, concat_logits, part_logits, top_n_index, top_n_prob = model(input_batch)
-    # output = model(input_batch)[0]
-    # output = output.detach().numpy()
-    _, predict = torch.max(concat_logits, 1)
-    pred_id = predict.item()
-    print(pred_id)
-    output.append(pred_id)
-  return output
-    # print('bird class:', model.bird_classes[pred_id])
+  birds = read_image_class_labels()
 
+  for bird in birds:
+    images = np.array(birds[bird])
+    images = np.intersect1d(images, train_imgs)
+    for image in images:
+      print(image)
+      segment_fn = os.path.join(path_segments, "{}.npz".format(image))
+      acts_fn = os.path.join(path_activations, "{}.npz".format(image))
+      output = []
+      if os.path.exists(acts_fn):
+        continue
+      data = (np.load(segment_fn)['arr'] * 255).astype(np.uint8)
 
-acts_for_images()
-# acts_for_whole_images()
+      for segement in data:
+        input_tensor = preprocess(segement)
+        input_batch = input_tensor.unsqueeze(0)
+        top_n_coordinates, concat_out, raw_logits, concat_logits, part_logits, top_n_index, top_n_prob = model(
+          input_batch)
+        _, predict = torch.max(concat_logits, 1)
+        pred_id = predict.item() + 1
+        output.append(pred_id)
+      a = np.array(output) == bird
+
+      np.savez_compressed(acts_fn, arr=output, correct=a)
+      print('Finish:',image)
+
+# acts_for_images()

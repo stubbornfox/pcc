@@ -1,6 +1,7 @@
-NUMBER_CLASS = 200
-NUMBER_CLUSTER = 500
+NUMBER_CLASS = 7
+NUMBER_CLUSTER = 70
 ERROR_IMAGES = [448, 848, 1401, 2123, 2306, 2310, 3617, 3619, 3780, 5029, 5393, 6321, 6551, 8551, 9322]
+ACCURACY_SEGMENTS = 40
 import os
 from collections import defaultdict, OrderedDict
 from PIL import Image
@@ -92,24 +93,12 @@ def load_activations(train = True):
       output.append(act)
       img_numbers.append(image)
 
-  images = load_images(False)
-
-  for image in images:
-    acts_fn = os.path.join(path_activations, "{}.npz".format(image))
-    acts = np.load(acts_fn)['dropouts']
-    for act in acts:
-      output.append(act)
-      img_numbers.append(image)
-
   output = np.array(output)
   img_numbers = np.array(img_numbers)
   return output, img_numbers
 
 def load_img_activation(img_ids, whole = False):
   output = []
-  act_set = 'bn_fc'
-  if  whole:
-    act_set = 'bn_fc_whole'
   for img_id in img_ids:
     path = "v2/data/activations/bn_fc/{}.npz".format(img_id)
     acts = np.load(path)['dropouts']
@@ -144,38 +133,21 @@ def load_images(train = True):
   final_images = np.sort(final_images)
   return final_images
 
-def load_segments(train = True, concept_idxs = []):
+def load_segments(train = True, concept_idxs = [], concept_localtion = []):
   print('Load Segments')
   path_segments = "v2/data/segments"
   images = load_images(True)
 
   index, count, len_idxs = 0, 0, len(concept_idxs)
+  if len(concept_localtion) == 0:
+    concept_localtion = locate_concepts_ids(images)
+  concept_localtion = concept_localtion[concept_idxs]
   output = []
-
-  for image in images:
-    sgm_fn = os.path.join(path_segments, "{}.npz".format(image))
-    sgms = np.load(sgm_fn)['arr']
-    for sgm in sgms:
-      if index in concept_idxs:
-        output.append(sgm)
-        count += 1
-        if len_idxs == count:
-          return np.array(output)
-      index += 1
-  images = load_images(False)
-
-  for image in images:
-    sgm_fn = os.path.join(path_segments, "{}.npz".format(image))
-    sgms = np.load(sgm_fn)['arr']
-    for sgm in sgms:
-      if index in concept_idxs:
-        output.append(sgm)
-        count += 1
-        if len_idxs == count:
-          return np.array(output)
-      index += 1
-
-  output = np.array(output)
+  for concept in concept_localtion:
+    index, img_id, count = concept
+    sgm_fn = os.path.join(path_segments, "{}.npz".format(img_id))
+    sgm = np.load(sgm_fn)['arr'][count]
+    output.append(sgm)
   return output
 
 def load_cluster(cluster_path):
@@ -189,10 +161,41 @@ def euclidean_distance(a, b):
   dist = np.linalg.norm(a - b)
   return dist
 
-def filter_important_acts(acts, concepts, cluster_model):
-  pass
+def filter_important_concept(concepts):
+  for concept in concepts:
+    concept_number, concept_idxs, center, cluster_lbl = concept
+
+def locate_concepts_ids(img_ids):
+  print(img_ids)
+  index = 0
+  output = []
+  for img_id in img_ids:
+    path = "v2/data/activations/bn_fc/{}.npz".format(img_id)
+    acts = np.load(path)['arr']
+    count = 0
+    for a in acts:
+      output.append((index, img_id, count))
+      count += 1
+      index += 1
+  return np.array(output)
 
 def load_kmean_model():
   with open("v2/data/clusters/kmean_{}_{}.pkl".format(NUMBER_CLUSTER, NUMBER_CLASS), 'rb') as file:
     kmeans = pickle.load(file)
   return kmeans
+
+def load_concept_accuracy(locaids, concept_idxs):
+  loop_i = locaids[concept_idxs]
+  total = 0
+  print(loop_i)
+  print('concept_idxs',concept_idxs)
+  for i in loop_i:
+    index, img_id, count = i
+    print(index, img_id, count)
+    path = "v2/data/activations/predicts/{}.npz".format(img_id)
+    corrects = np.load(path)['correct']
+    print(corrects)
+    c_correct = corrects[count]
+    total += int(c_correct)
+  print('total', total)
+  return total / len(concept_idxs) > ACCURACY_SEGMENTS / 100

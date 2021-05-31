@@ -1,5 +1,5 @@
 from util import *
-from discover_concepts import _concepts
+from discover_concepts import _concepts, _important_concepts
 import numpy as np
 from sklearn import tree as tree
 from sklearn import ensemble
@@ -30,11 +30,11 @@ def calculate_has_concepts(acts_of_img, concepts, kmeanmodel):
     cluster_lbls.append(cluster_lbl)
   predict = kmeanmodel.predict(acts_of_img)
   kmean_center = kmeanmodel.cluster_centers_
-  keep = []
-  for (act, cl) in zip(acts_of_img, predict):
-    a = euclidean_distance(act, kmean_center[cl])
-    if a <= 20:
-      keep.append(cl)
+  keep = predict
+  # for (act, cl) in zip(acts_of_img, predict):
+    # a = euclidean_distance(act, kmean_center[cl])
+    # if a <= 20:
+    #   keep.append(cl)
   for lbl in cluster_lbls:
     if lbl in keep:
       output.append(1)
@@ -45,8 +45,8 @@ def calculate_has_concepts(acts_of_img, concepts, kmeanmodel):
 def build_attributes(images_acts, concepts, kmeanmodel):
   output = []
   for acts_of_img in images_acts:
-    # output.append(calculate_has_concepts(acts_of_img, concepts, kmeanmodel))
-    output.append(calculate_vector_to_concepts(acts_of_img, concepts, kmeanmodel))
+    output.append(calculate_has_concepts(acts_of_img, concepts, kmeanmodel))
+    # output.append(calculate_vector_to_concepts(acts_of_img, concepts, kmeanmodel))
 
   return np.array(output)
 
@@ -55,7 +55,7 @@ def concept_treeeee():
   test_ids = load_images(False)
   y_train = build_labels_data(train_ids)
   y_test = build_labels_data(test_ids)
-  concepts = _concepts()
+  concepts = _important_concepts()
   train_images_acts = load_img_activation(train_ids)
   test_images_acts = load_img_activation(test_ids)
   kmeanmodel = load_kmean_model()
@@ -65,7 +65,7 @@ def concept_treeeee():
 
   # optimized_tree(X_train, y_train, X_test, y_test)
 
-  clf = tree.DecisionTreeClassifier(min_samples_split=10, min_samples_leaf=10, max_features='sqrt')
+  clf = tree.DecisionTreeClassifier()
   clf = clf.fit(X_train, y_train)
 
   print("Accuracy Score on Train:")
