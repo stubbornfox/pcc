@@ -31,13 +31,13 @@ start_time = time.time()
 print("--- %s start time prepare data---" % start_time)
 
 cluster_centers = []
-with open("centers_2000.csv", "r") as csvfile:
+with open("preprocess-data/centers_2000.csv", "r") as csvfile:
   csvreader = csv.reader(csvfile)
   for row in csvreader:
     cluster_centers.append(row)
 cluster_centers = np.asarray(cluster_centers, dtype=np.float64)
 
-with open("whole_training_activation.csv", "r") as csvfile:
+with open("preprocess-data/whole_training_activation.csv", "r") as csvfile:
   csvreader = csv.reader(csvfile)
   for row in csvreader:
     train_labels.append(row[0])
@@ -52,7 +52,7 @@ X_train = build_features(cluster_centers, train_activations)
 test_file_names = []
 test_labels = []
 test_activations = []
-with open("whole_training_activation_test.csv", "r") as csvfile:
+with open("preprocess-data/whole_training_activation_test.csv", "r") as csvfile:
   csvreader = csv.reader(csvfile)
   for row in csvreader:
     test_labels.append(row[0])

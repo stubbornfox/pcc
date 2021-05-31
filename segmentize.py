@@ -27,28 +27,29 @@ def _return_superpixels(im2arr):
     for i in range(n_params):
         param_masks = []
         segments_slic = slic(im2arr, n_segments=n_segmentss[i], compactness=20, sigma=1, start_label=1)
-        for s in range(segments_slic.max()):
-            mask = (segments_slic == s).astype(float)
-            if np.mean(mask) > 0.001:
-                unique = True
-                for seen_mask in unique_masks:
-                    jaccard = np.sum(seen_mask * mask) / np.sum((seen_mask + mask) > 0)
-                    if jaccard > 0.5:
-                        unique = False
-                        break
-                if unique:
-                    param_masks.append(mask)
-        unique_masks.extend(param_masks)
-        superpixels, patches = [], []
-        while unique_masks:
-            superpixel, patch = _extract_patch(im2arr, unique_masks.pop())
-            superpixels.append(superpixel)
-            patches.append(patch)
+        print(segments_slic)
+        plt.imshow(mark_boundaries(im2arr, segments_slic))
+        plt.show()
+        # for s in range(segments_slic.max()):
+        #     mask = (segments_slic == s).astype(float)
+        #     if np.mean(mask) > 0.001:
+        #         unique = True
+        #         for seen_mask in unique_masks:
+        #             jaccard = np.sum(seen_mask * mask) / np.sum((seen_mask + mask) > 0)
+        #             if jaccard > 0.5:
+        #                 unique = False
+        #                 break
+        #         if unique:
+        #             param_masks.append(mask)
+        # unique_masks.extend(param_masks)
+        # superpixels, patches = [], []
+        # while unique_masks:
+        #     superpixel, patch = _extract_patch(im2arr, unique_masks.pop())
+        #     superpixels.append(superpixel)
+        #     patches.append(patch)
+        #
+        # return superpixels, patches
 
-        return superpixels, patches
-        # print(segments_slic)
-        # plt.imshow(mark_boundaries(img, segments_slic))
-        # plt.show()
 # dataset, image_numbers, patches = [], [], []
 # train_patches_save_path = os.path.join('data/CUB_200_2011', 'dataset/train_patches_1/')
 # path = 'data/CUB_200_2011/dataset/train_crop/*/*'
@@ -74,3 +75,42 @@ def _return_superpixels(im2arr):
 # # sdataset, simage_numbers, spatches = \
 # #     np.array(dataset), np.array(image_numbers), np.array(patches)
 # # print(sdataset.shape)
+
+def print_sesgments_examples():
+    shape = (448, 448)
+    k = 'data/CUB_200_2011/images/002.Laysan_Albatross/Laysan_Albatross_0003_1033.jpg'
+    img = Image.open(k)
+    im2arr = np.array(img.resize(shape, Image.BILINEAR))
+    im2arr = np.float32(im2arr) / 255.0
+    n_segmentss = [15, 50, 80]
+    n_params = len(n_segmentss)
+    unique_masks = []
+    for i in range(n_params):
+        param_masks = []
+        segments_slic = slic(im2arr, n_segments=n_segmentss[i], compactness=20, sigma=1, start_label=1)
+        plt.imshow(mark_boundaries(im2arr, segments_slic))
+        plt.show()
+        # for s in range(segments_slic.max()):
+        #     mask = (segments_slic == s).astype(float)
+        #     if np.mean(mask) > 0.001:
+        #         unique = True
+        #         for seen_mask in unique_masks:
+        #             jaccard = np.sum(seen_mask * mask) / np.sum((seen_mask + mask) > 0)
+        #             if jaccard > 0.5:
+        #                 unique = False
+        #                 break
+        #         if unique:
+        #             param_masks.append(mask)
+        # unique_masks.extend(param_masks)
+        # superpixels, patches = [], []
+        # while unique_masks:
+        #     superpixel, patch = _extract_patch(im2arr, unique_masks.pop())
+        #     superpixels.append(superpixel)
+        #     patches.append(patch)
+        #
+        # # return superpixels, patches
+        # # print(segments_slic)
+        # plt.imshow(mark_boundaries(img, segments_slic))
+        # plt.show()
+
+print_sesgments_examples()

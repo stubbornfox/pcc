@@ -141,5 +141,6 @@ data/
 *.csv
 .csv
 .npz
+.pkl
 
 preprocess-data/

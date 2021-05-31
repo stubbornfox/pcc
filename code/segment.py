@@ -18,7 +18,7 @@ def _extract_patch(image, mask, image_shape=IMAGE_SHAPE, average_image_value=117
     return image_resized, patch
 
 def _return_superpixels(im2arr):
-    n_segmentss = [15]
+    n_segmentss = [15, 50, 80]
     n_params = len(n_segmentss)
     unique_masks = []
     for i in range(n_params):
@@ -44,9 +44,9 @@ def _return_superpixels(im2arr):
 
         return superpixels, patches
 
-def segment_images(classes = None, shape=IMAGE_SHAPE, crop_path = 'data/CUB_200_2011/dataset/test_crop'):
+def segment_images(classes = None, shape=IMAGE_SHAPE, crop_path = 'data/CUB_200_2011/dataset/train_crop'):
     path = 'data/CUB_200_2011'
-    path_segments = "preprocess-data/test/segments"
+    path_segments = "preprocess-data/multi_res_segments"
     path_images = os.path.join(path, 'images.txt')
     images = []
     if not os.path.isdir(path_segments):
@@ -62,8 +62,6 @@ def segment_images(classes = None, shape=IMAGE_SHAPE, crop_path = 'data/CUB_200_
     for id, file_name in images:
         full_path_file_name = os.path.join(crop_path, file_name)
         index += 1
-        print(file_name)
-        print('{}/11788'.format(index))
         if os.path.exists(full_path_file_name):
             segment_files = os.path.join(path_segments, '{}.npz'.format(id))
             if not os.path.exists(segment_files):
