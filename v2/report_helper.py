@@ -96,8 +96,10 @@ def print_out_concepts():
     plt.show()
 
 # print_out_concepts()
-predict_all_trained_segments()
+# predict_all_trained_segments()
 # predict(imgids)
 # train_images, _ = load_train_test()
 # local_concepts = locate_concepts_ids(train_images)
 # print_out_concepts()
+
+print(compare_activations_with_Niclas())

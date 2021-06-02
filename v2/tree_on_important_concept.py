@@ -9,7 +9,20 @@ import math
 from sklearn.cluster import AgglomerativeClustering
 # from IPython.display import Image
 
-def calculate_vector_to_concepts(acts_of_img, concepts, kmeanmodel):
+def calculate_cs_vector_to_concepts(acts_of_img, concepts, kmeanmodel):
+  output = []
+  for concept in concepts:
+    _, _, center, cluster_lbl = concept
+    max_similarity = 0
+    for act in acts_of_img:
+      similarity = cosine_similarity(act, center)
+      if similarity > max_similarity:
+        max_similarity = similarity
+    # min_distance = int(math.floor(min_distance))
+    output.append(max_similarity)
+  return np.array(output)
+
+def calculate_vector_to_concepts(acts_of_img, concepts):
   output = []
   for concept in concepts:
     _, _, center, cluster_lbl = concept
@@ -18,8 +31,8 @@ def calculate_vector_to_concepts(acts_of_img, concepts, kmeanmodel):
       distance = euclidean_distance(act, center)
       if distance < min_distance:
         min_distance = distance
-    # min_distance = int(math.floor(min_distance) <= 6)
-    output.append(min_distance)
+    min_distance = int(math.floor(min_distance))
+    output.append(min_distance*min_distance)
   return np.array(output)
 
 def calculate_has_concepts(acts_of_img, concepts, kmeanmodel):
@@ -49,7 +62,8 @@ def build_attributes(images_acts, concepts, kmeanmodel):
   output = []
   for acts_of_img in images_acts:
     # output.append(calculate_has_concepts(acts_of_img, concepts, kmeanmodel))
-    output.append(calculate_vector_to_concepts(acts_of_img, concepts, kmeanmodel))
+    # output.append(calculate_vector_to_concepts(acts_of_img, concepts, kmeanmodel))
+    output.append(calculate_cs_vector_to_concepts(acts_of_img, concepts, kmeanmodel))
 
   return np.array(output)
 
@@ -68,7 +82,7 @@ def concept_treeeee():
 
   # optimized_tree(X_train, y_train, X_test, y_test)
 
-  clf = ensemble.RandomForestClassifier(min_samples_leaf=5, min_samples_split=5, max_features='auto', n_estimators=10)
+  clf = ensemble.RandomForestClassifier(min_samples_leaf=10, min_samples_split=10, max_features='sqrt', n_estimators=20)
   clf = clf.fit(X_train, y_train)
 
   print("Accuracy Score on Train:")
@@ -237,6 +251,6 @@ def plot_decision_path(img_id):
   print(pos_x, pos_y)
   print(nodeids)
   print('number of nodes',len(concepts[nodeids]))
-  print_out_concepts(concepts[nodeids], len(nodeids), pos_x, pos_y)
+  # print_out_concepts(concepts[nodeids], len(nodeids), pos_x, pos_y)
 # concept_treeeee()
 plot_decision_path(631)

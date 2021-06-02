@@ -1,7 +1,8 @@
-NUMBER_CLASS = 20
-NUMBER_CLUSTER = 200
+NUMBER_CLASS = 200
+NUMBER_CLUSTER = 600
+#NUMBER_CLUSTER = 500
 ERROR_IMAGES = [448, 848, 1401, 2123, 2306, 2310, 3617, 3619, 3780, 5029, 5393, 6321, 6551, 8551, 9322]
-ACCURACY_SEGMENTS = 60
+ACCURACY_SEGMENTS = 50
 import os
 from collections import defaultdict, OrderedDict
 from PIL import Image
@@ -97,6 +98,15 @@ def load_activations(train = True):
   img_numbers = np.array(img_numbers)
   return output, img_numbers
 
+def compare_activations_with_Niclas(train = True):
+  activations_niclas = np.load("v2/data/activations/bn_fc/1.npz")['dropouts']
+  activations_ha = np.load("v2/data/activations/bn_fc/1_Niclas.npz")['dropouts']
+
+  compare = activations_niclas == activations_ha
+  print(activations_niclas[:1][:10])
+  print(activations_ha[:1][:10])
+  return compare
+
 def load_img_activation(img_ids, whole = False):
   output = []
   for img_id in img_ids:
@@ -104,7 +114,7 @@ def load_img_activation(img_ids, whole = False):
     acts = np.load(path)['dropouts']
     output.append(acts)
 
-  return np.array(output)
+  return np.array(output, dtype=object)
 
 def load_img_activation_outputlayer(img_ids, whole = False):
   output = []
@@ -198,3 +208,12 @@ def load_concept_accuracy(locaids, concept_idxs):
     total += int(c_correct)
   # print('total', total)
   return total / len(concept_idxs) > ACCURACY_SEGMENTS / 100
+
+def cosine_similarity(a, b):
+  """Cosine similarity of two vectors."""
+  assert a.shape == b.shape, 'Two vectors must have the same dimensionality'
+  a_norm, b_norm = np.linalg.norm(a), np.linalg.norm(b)
+  if a_norm * b_norm == 0:
+    return 0.
+  cos_sim = np.sum(a * b) / (a_norm * b_norm)
+  return cos_sim

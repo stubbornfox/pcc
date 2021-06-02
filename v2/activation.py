@@ -134,3 +134,4 @@ def predict_all_trained_segments():
       print('Finish:',image)
 
 # acts_for_images()
+predict_all_trained_segments()
