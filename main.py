@@ -1,16 +1,58 @@
-# This is a sample Python script.
+from steps.s1_build_segments import build_segments
+from steps.s2_interpret_segments import interpret_segments
+from steps.s3_cluster_segments import cluster_segments
+from steps.s4_discover_concepts import discover_concepts
+from steps.s5_build_decision_tree import build_decision_tree
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+from utils.configuration import Configuration
+from utils.dataset import Dataset
+
+from os.path import realpath, dirname, join
+
+configuration = Configuration(
+    num_classes=200,
+    num_clusters=600,
+    cluster_accuracy_threshold=50,
+)
+dataset = Dataset(
+    base_path=join(realpath(dirname(__file__)), 'data', 'CUB_200_2011'),
+    configuration=configuration,
+)
+
+# Step 1: Segmentation
+# ==============================================================================
+# In this step we split each source image up into multiple smaller segments.
+# These segments are saved to disk and will be re-used in following steps.
+build_segments(configuration, dataset)
+
+# Step 2: Interpret the segments
+# ==============================================================================
+# Now the segments are passed through a convolutional neural network (CNN).
+# We keep the output of the last fully connected layer and the final prediction
+# result. The former is an interpretation of what the network thinks is
+# contained in the image, and the latter can be used in a later step to prune
+# unimportant segments (e.g. parts of the background).
+interpret_segments(configuration, dataset)
+
+# Step 3: Clustering
+# ==============================================================================
+# Based on the interpretation of the network gathered from the former step, we
+# group similar segments together. These will then represent prototypical
+# features, e.g. striped wings or a read beak.
+cluster_segments(configuration, dataset)
+
+# Step 4: Concept Discovery
+# ==============================================================================
+# Now clean our generated clusters, as there will be ones that e.g. only contain
+# images of background concepts like greenery, the sky or parts of the ocean.
+# This is done by seeing how accurately the network was at identifying the
+# target class solely based on each segment of the cluster.
+# This accuracy will be higher for segments displaying prototypical parts of a
+# bird and lower for random background noise.
+discover_concepts(configuration, dataset)
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+# Step 5: Decision Tree
+# ==============================================================================
+# Now we are ready to construct a decision tree based on the clusters.
+build_decision_tree(configuration, dataset)
