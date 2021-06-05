@@ -13,10 +13,10 @@ class Dataset:
 
     # These seem to not exist or otherwise throw an error on read, so we do not
     # use them.
-    error_images = [
+    error_images = set([
         448, 848, 1401, 2123, 2306, 2310, 3617, 3619, 3780, 5029, 5393, 6321,
         6551, 8551, 9322,
-    ]
+    ])
 
     def __init__(self, configuration: Configuration, base_path: str):
         self.base_path = base_path
@@ -31,14 +31,15 @@ class Dataset:
 
         with open(self.path('images.txt'), 'r') as f:
             for line in f:
-                file_id, file_name = line.strip('\n').split(',')[0].split(' ')
+                image_id, file_name = line.strip('\n').split(',')[0].split(' ')
+                image_id = int(image_id)
                 bird_id = int(file_name[:3])
 
                 contained_in_dataset = bird_id <= self.configuration.num_classes
-                is_valid_image = id not in self.error_images
+                is_valid_image = image_id not in self.error_images
                 if contained_in_dataset and is_valid_image:
                     images.append(
-                        (int(file_id), self.path(join('images', file_name)))
+                        (image_id, self.path(join('images', file_name)))
                     )
 
         return images
@@ -58,7 +59,7 @@ class Dataset:
         if include_test_ids:
             valid_image_ids.update(test_image_ids)
 
-        valid_image_ids.difference_update(set(self.error_images))
+        valid_image_ids.difference_update(self.error_images)
 
         with open(self.path('image_class_labels.txt'), 'r') as file:
             for line in file:
@@ -77,7 +78,7 @@ class Dataset:
         classes = defaultdict(list)
 
         for image_id, bird_id in self._image_bird_id_pairs(
-            include_train_images=include_train_images,
+            include_train_ids=include_train_images,
             include_test_ids=include_test_images,
         ):
             classes[bird_id].append(image_id)

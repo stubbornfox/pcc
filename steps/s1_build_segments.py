@@ -1,10 +1,11 @@
+from glob import glob
 from os.path import join, exists
 
-from PIL.Image import Image
+from PIL import Image
 from skimage.segmentation import slic
 from tqdm import tqdm
 
-from utils.checkpoints import checkpoint_directory, create_checkpoint
+from utils.checkpoints import checkpoint_directory
 from utils.configuration import Configuration
 from utils.dataset import Dataset
 import numpy as np
@@ -16,20 +17,23 @@ def build_segments(configuration: Configuration, dataset: Dataset) -> None:
     ensure_directory_exists(segments_path())
     images = dataset.image_id_path_pairs()
 
+    if len(images) == len(glob(segments_path('*.npz'))):
+        print(f'Skipping image segmentation, as all {len(images)} segments already exist on disk...')
+        return
+
     print('Segmenting images...')
     progress = tqdm(images)
-    for file_id, file_name in progress:
+    for image_id, file_name in progress:
         progress.desc = file_name.split('/')[-1]
         progress.refresh()
 
-        segment_file_path = segments_path(f'{file_id}.npz')
+        segment_file_path = segments_path(f'{image_id}.npz')
         if not exists(segment_file_path):
             image = Image.open(file_name)
-            im2arr = np.array(
-                image.resize(configuration.image_shape, Image.BILINEAR)
-            )
+            shape = configuration.image_shape
+            im2arr = np.array(image.resize(shape, Image.BILINEAR))
             im2arr = np.float32(im2arr) / 255.0
-            superpixels, patches = _return_superpixels(im2arr)
+            superpixels, patches = _return_superpixels(im2arr, shape)
             _save_segment(segment_file_path, superpixels, patches)
 
 

@@ -2,6 +2,7 @@ from glob import glob
 from os.path import join, exists
 
 import numpy as np
+import torch
 from torchvision.transforms import transforms
 from tqdm import tqdm
 
@@ -16,6 +17,8 @@ from utils.paths import ensure_directory_exists
 
 def interpret_segments(configuration: Configuration, dataset: Dataset) -> None:
     ensure_directory_exists(activation_path())
+    ensure_directory_exists(prediction_path())
+
     model = NtsNetWrapper(cnn.model())
     processing_pipeline = transforms.Compose([
       transforms.ToTensor(),
@@ -29,10 +32,10 @@ def interpret_segments(configuration: Configuration, dataset: Dataset) -> None:
         # test data.
         include_test_images=True,
         include_train_images=True,
-    )):
-        for image_id in image_ids:
+    ).items(), position=0):
+        for image_id in tqdm(image_ids, position=1, leave=False):
             activation_file = activation_path(f'{image_id}.npz')
-            prediction_file = activation_path(f'{image_id}.npz')
+            prediction_file = prediction_path(f'{image_id}.npz')
 
             if exists(activation_file) and exists(prediction_file):
                 continue
@@ -42,17 +45,20 @@ def interpret_segments(configuration: Configuration, dataset: Dataset) -> None:
             predictions = []
             segments = (load_segment(image_id) * 255).astype(np.uint8)
 
-            for segment in segments:
-                input_tensor = processing_pipeline(segment)
-                input_batch = input_tensor.unsqueeze(0)
+            with torch.no_grad():
+                for segment in segments:
+                    input_tensor = processing_pipeline(segment)
+                    input_batch = input_tensor.unsqueeze(0)
 
-                # TODO: We might need to call torch.no_grad here?
-                activation, dropout = model.interpret(input_batch)
-                predicted_bird_id = model.predict_bird(input_batch)
+                    [
+                        activation,
+                        dropout,
+                        predicted_bird_id
+                    ] = model.interpret(input_batch)
 
-                predictions.append(predicted_bird_id)
-                activations.append(activation)
-                dropouts.append(dropout)
+                    predictions.append(predicted_bird_id)
+                    activations.append(activation)
+                    dropouts.append(dropout)
 
             # These two are only separated, as we first only computed the
             # activations and later also needed the predictions. As this
