@@ -17,7 +17,7 @@ def build_segments(configuration: Configuration, dataset: Dataset) -> None:
     ensure_directory_exists(segments_path())
     images = dataset.image_id_path_pairs()
 
-    if len(images) == len(glob(segments_path('*.npz'))):
+    if len(images) <= len(glob(segments_path('*.npz'))):
         print(f'Skipping image segmentation, as all {len(images)} segments already exist on disk...')
         return
 
@@ -41,8 +41,8 @@ def segments_path(path=''):
     return checkpoint_directory(join('segments', path))
 
 
-def load_segment(image_id) -> np.ndarray:
-    return np.load(segments_path(f'{image_id}.npz'))['arr']
+def load_segments_of(image_id) -> np.ndarray:
+    return (np.load(segments_path(f'{image_id}.npz'))['arr'] * 255).astype(np.uint8)
 
 
 def _save_segment(path: str, superpixels, patches) -> None:

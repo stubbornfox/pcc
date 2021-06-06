@@ -6,7 +6,7 @@ import torch
 from torchvision.transforms import transforms
 from tqdm import tqdm
 
-from steps.s1_build_segments import load_segment
+from steps.s1_build_segments import load_segments_of
 from utils import cnn
 from utils.checkpoints import checkpoint_directory
 from utils.cnn import NtsNetWrapper
@@ -24,26 +24,31 @@ def interpret_segments(configuration: Configuration, dataset: Dataset) -> None:
       transforms.ToTensor(),
       transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
     ])
-
-    print('Interpreting segments...')
-    for bird_id, image_ids in tqdm(dataset.image_ids_per_class(
+    bird_progress = tqdm(dataset.image_ids_per_class(
         # We can safely use _all_ images here, as we only write the interpreted
         # segments to disk. In the following training steps we will exclude the
         # test data.
         include_test_images=True,
         include_train_images=True,
-    ).items(), position=0):
-        for image_id in tqdm(image_ids, position=1, leave=False):
+    ).items(), position=0)
+
+    print('Interpreting segments...')
+    for bird_id, image_ids in bird_progress:
+        bird_progress.set_description(f'Bird {bird_id}', refresh=True)
+
+        image_process = tqdm(image_ids, position=1, leave=False)
+        for image_id in image_process:
+            image_process.set_description(f'Image {image_id}', refresh=True)
             activation_file = activation_path(f'{image_id}.npz')
             prediction_file = prediction_path(f'{image_id}.npz')
 
             if exists(activation_file) and exists(prediction_file):
                 continue
 
-            activations = []
+            pre_trained_model_outputs = []
             dropouts = []
             predictions = []
-            segments = (load_segment(image_id) * 255).astype(np.uint8)
+            segments = load_segments_of(image_id)
 
             with torch.no_grad():
                 for segment in segments:
@@ -51,13 +56,13 @@ def interpret_segments(configuration: Configuration, dataset: Dataset) -> None:
                     input_batch = input_tensor.unsqueeze(0)
 
                     [
-                        activation,
+                        pre_trained_model_output,
                         dropout,
                         predicted_bird_id
                     ] = model.interpret(input_batch)
 
                     predictions.append(predicted_bird_id)
-                    activations.append(activation)
+                    pre_trained_model_outputs.append(pre_trained_model_output)
                     dropouts.append(dropout)
 
             # These two are only separated, as we first only computed the
@@ -66,7 +71,7 @@ def interpret_segments(configuration: Configuration, dataset: Dataset) -> None:
             # compatibility with the files we had already generated.
             np.savez_compressed(
                 activation_file,
-                arr=activations,
+                arr=pre_trained_model_outputs,
                 dropouts=dropouts,
             )
             np.savez_compressed(
@@ -87,13 +92,18 @@ def prediction_path(path=''):
 def load_train_activations_from_disk(dataset: Dataset):
     train_image_ids, _ = dataset.train_test_image_ids()
     train_image_ids = set(train_image_ids)
-
-    return list(np.array([
-        np.load(file)
+    batched_activations = [
+        np.load(file)['dropouts']
         for file
         in glob(activation_path('*.npz'))
-        if int(file.removesuffix('.npz')) in train_image_ids
-    ]).flatten())
+        if int(file.split('/')[-1].removesuffix('.npz')) in train_image_ids
+    ]
+
+    all_activations = []
+    for batch in batched_activations:
+        all_activations.extend(list(batch))
+
+    return all_activations
 
 
 def load_activations_of(image_id) -> np.ndarray:

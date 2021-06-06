@@ -10,9 +10,9 @@ from utils.dataset import Dataset
 from os.path import realpath, dirname, join
 
 configuration = Configuration(
-    num_classes=200,
-    num_clusters=600,
-    cluster_accuracy_threshold=50,
+    num_classes=100,
+    num_clusters=200,
+    cluster_accuracy_threshold=10,
 )
 dataset = Dataset(
     base_path=join(realpath(dirname(__file__)), 'data', 'CUB_200_2011'),

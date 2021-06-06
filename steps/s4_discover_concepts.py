@@ -20,7 +20,7 @@ def discover_concepts(configuration: Configuration, dataset: Dataset) -> None:
     local_concepts = _locate_concept_ids_for(train_image_ids)
 
     # This will be very fast, so there is no need for a progress bar
-    for cluster_id in range(configuration.num_clusters + 1):
+    for cluster_id in range(cluster_ids.max() + 1):
         relevant_indices = np.where(cluster_ids == cluster_id)[0]
         num_occurrences = len(relevant_indices)
 
@@ -41,35 +41,39 @@ def discover_concepts(configuration: Configuration, dataset: Dataset) -> None:
         concept = (concept_id, k_nearest_concept_indices, centers[cluster_id], cluster_id)
         concepts.append(concept)
 
+    foo = 'bar'
+
 def _cluster_accuracy_too_low(
-    local_concepts,
+    segment_image_mappings,
     nearest_concept_indices: np.ndarray,
     configuration: Configuration,
 ) -> bool:
-    total = 0
+    num_correct_guesses = 0
 
-    for index, image_id, count in local_concepts[nearest_concept_indices]:
+    for global_segment_id, image_id, local_segment_id in segment_image_mappings[nearest_concept_indices]:
         correctly_guessed_indices = load_correct_predictions_of(image_id)
-        c_correct = correctly_guessed_indices[count]
-        # TODO: This seems to compute a sum, maybe use a .sum method to make
-        #       this more clear?
-        total += int(c_correct)
+        guess_was_correct = correctly_guessed_indices[local_segment_id]
+        num_correct_guesses += int(guess_was_correct)
 
-    accuracy = total / len(nearest_concept_indices)
+    accuracy = num_correct_guesses / len(nearest_concept_indices)
     threshold = configuration.cluster_accuracy_threshold / 100
 
     return accuracy < threshold
 
 def _locate_concept_ids_for(image_ids) -> np.ndarray:
     # TODO: Explicitly state what the output of this function is useful for.
-    index = 0
+    # This is the "index" of the segment if you would flatten _all_ segments of
+    # all images.
+    global_segment_id = 0
     output = []
 
     for image_id in image_ids:
         activations = load_activations_of(image_id)
-        for (count, _) in enumerate(activations):
-            entry = (index, image_id, count)
+        for (local_segment_id, _) in enumerate(activations):
+            # The local_segment_id is the index of the activation inside its
+            # .npz file
+            entry = (global_segment_id, image_id, local_segment_id)
             output.append(entry)
-            index += 1
+            global_segment_id += 1
 
     return np.array(output)

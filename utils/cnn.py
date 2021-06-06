@@ -6,7 +6,7 @@ from torch import cuda, Tensor
 from torch.nn import Module
 from torchvision.transforms import transforms
 
-from steps.s1_build_segments import load_segment
+from steps.s1_build_segments import load_segments_of
 
 
 def device() -> str:
@@ -66,10 +66,10 @@ class NtsNetWrapper:
         dropout = self._last_dropout.detach().numpy()
         dropout_registration.remove()
 
-        activation = self._last_activation.detach().numpy()
+        pre_trained_model_output = self._last_activation.detach().numpy()
         activation_registration.remove()
 
-        return activation, dropout, predicted_bird_id
+        return pre_trained_model_output, dropout, predicted_bird_id
 
     def _extract_predicted_bird_id(self, result):
         # https://pytorch.org/hub/nicolalandro_ntsnet-cub200_ntsnet/#example-usage
@@ -79,9 +79,13 @@ class NtsNetWrapper:
         return predict.item() + 1
 
     def _safe_dropout(self, dropout):
-        # TODO: Do we maybe also want to only assign it, when the pretrained net
-        #       is called the first time?
-        self._last_dropout = dropout[0]
+        # The pretrained model gets called _twice_ in ntsnet, see
+        # https://github.com/zhouyuangan/NTS-Net/blob/master/core/model.py#L51,L71
+        #
+        # We only care about the dropout of the _first_ call, as the second
+        # one is not passed the raw input image
+        if len(dropout) == 1:
+            self._last_dropout = dropout[0]
 
     def _safe_activation(self, activation):
         # TODO: Why only the first?
