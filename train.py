@@ -38,7 +38,7 @@ cluster_segments(configuration, dataset)
 # target class solely based on each segment of the cluster.
 # This accuracy will be higher for segments displaying prototypical parts of a
 # bird and lower for random background noise.
-concepts = discover_concepts(configuration, dataset)
+discover_concepts(configuration, dataset)
 
 
 # Step 5: Decision Tree
