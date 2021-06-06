@@ -1,4 +1,5 @@
-from glob import glob
+from __future__ import annotations
+
 from os.path import join, exists
 
 import numpy as np

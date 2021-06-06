@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from os import makedirs
 from os.path import isdir, dirname, realpath, join
 

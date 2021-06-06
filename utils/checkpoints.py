@@ -1,6 +1,6 @@
-from os.path import join
+from __future__ import annotations
 
-import numpy as np
+from os.path import join
 
 from utils.paths import data_path
 

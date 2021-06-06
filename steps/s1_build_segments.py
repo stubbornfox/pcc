@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from glob import glob
 from os.path import join, exists
 

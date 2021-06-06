@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import numpy as np
 
 from steps.s2_interpret_segments import load_activations_of, load_correct_predictions_of
@@ -6,7 +8,7 @@ from utils.configuration import Configuration
 from utils.dataset import Dataset
 
 
-def discover_concepts(configuration: Configuration, dataset: Dataset) -> None:
+def discover_concepts(configuration: Configuration, dataset: Dataset) -> list:
     print('Discovering concepts...')
     concepts = []
 
@@ -41,7 +43,7 @@ def discover_concepts(configuration: Configuration, dataset: Dataset) -> None:
         concept = (concept_id, k_nearest_concept_indices, centers[cluster_id], cluster_id)
         concepts.append(concept)
 
-    foo = 'bar'
+    return concepts
 
 def _cluster_accuracy_too_low(
     segment_image_mappings,

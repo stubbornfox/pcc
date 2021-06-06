@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from steps.s1_build_segments import build_segments
 from steps.s2_interpret_segments import interpret_segments
 from steps.s3_cluster_segments import cluster_segments
@@ -36,7 +38,7 @@ cluster_segments(configuration, dataset)
 # target class solely based on each segment of the cluster.
 # This accuracy will be higher for segments displaying prototypical parts of a
 # bird and lower for random background noise.
-discover_concepts(configuration, dataset)
+concepts = discover_concepts(configuration, dataset)
 
 
 # Step 5: Decision Tree

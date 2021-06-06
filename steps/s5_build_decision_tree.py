@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from utils.configuration import Configuration
 from utils.dataset import Dataset
 from utils.proto_tree import ProtoTree
