@@ -91,17 +91,12 @@ def prediction_path(path=''):
 
 def load_train_activations_from_disk(dataset: Dataset):
     train_image_ids, _ = dataset.train_test_image_ids()
-    train_image_ids = set(train_image_ids)
-    batched_activations = [
-        np.load(file)['dropouts']
-        for file
-        in glob(activation_path('*.npz'))
-        if int(file.split('/')[-1].removesuffix('.npz')) in train_image_ids
-    ]
 
     all_activations = []
-    for batch in batched_activations:
-        all_activations.extend(list(batch))
+    for image_id in train_image_ids:
+        activation_file = activation_path(f'{image_id}.npz')
+        activation_batch = list(np.load(activation_file)['dropouts'])
+        all_activations.extend(activation_batch)
 
     return all_activations
 
