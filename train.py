@@ -4,20 +4,7 @@ from steps.s3_cluster_segments import cluster_segments
 from steps.s4_discover_concepts import discover_concepts
 from steps.s5_build_decision_tree import build_decision_tree
 
-from utils.configuration import Configuration
-from utils.dataset import Dataset
-
-from os.path import realpath, dirname, join
-
-configuration = Configuration(
-    num_classes=100,
-    num_clusters=200,
-    cluster_accuracy_threshold=10,
-)
-dataset = Dataset(
-    base_path=join(realpath(dirname(__file__)), 'data', 'CUB_200_2011'),
-    configuration=configuration,
-)
+from config import configuration, dataset
 
 # Step 1: Segmentation
 # ==============================================================================
@@ -30,7 +17,7 @@ build_segments(configuration, dataset)
 # Now the segments are passed through a convolutional neural network (CNN).
 # We keep the output of the last fully connected layer and the final prediction
 # result. The former is an interpretation of what the network thinks is
-# contained in the image, and the latter can be used in a later step to prune
+# contained i the image, and the latter can be used in a later step to prune
 # unimportant segments (e.g. parts of the background).
 interpret_segments(configuration, dataset)
 

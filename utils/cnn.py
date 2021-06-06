@@ -4,9 +4,6 @@ import numpy as np
 import torch
 from torch import cuda, Tensor
 from torch.nn import Module
-from torchvision.transforms import transforms
-
-from steps.s1_build_segments import load_segments_of
 
 
 def device() -> str:
@@ -27,6 +24,7 @@ def model():
                 'num_classes': 200
             }
         )
+        _model.eval()
 
     return _model
 
