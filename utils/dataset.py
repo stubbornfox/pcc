@@ -99,6 +99,14 @@ class Dataset:
             [image_id for image_id in all_test if image_id in bird_ids_per_image_id],
         )
 
+    def train_test_class_ids(self):
+        train_image_ids, test_image_ids = self.train_test_image_ids()
+        bird_id_per_image_id = dict(self._image_bird_id_pairs(True, True))
+
+        return (
+            [bird_id_per_image_id[image_id] for image_id in train_image_ids],
+            [bird_id_per_image_id[image_id] for image_id in test_image_ids],
+        )
 
     def _all_train_test_image_ids(self):
         """

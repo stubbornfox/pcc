@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from os.path import join
+from os.path import join, exists
 
 import numpy as np
 
@@ -15,6 +15,11 @@ from utils.paths import ensure_directory_exists
 def discover_concepts(configuration: Configuration, dataset: Dataset) -> None:
     ensure_directory_exists(concept_path())
     print('Discovering concepts...')
+
+    if exists(concept_file(configuration)):
+        print('Found existing concept file, skipping to the next step...')
+        return
+
     concepts = []
 
     # TODO: Why these exact values?
@@ -78,11 +83,18 @@ def concept_file(c: Configuration):
 
 
 def load_concepts(configuration: Configuration):
-    return np.load(concept_file(configuration), allow_pickle=True)['concepts']
+    return [tuple(row) for row in list(np.load(
+        concept_file(configuration),
+        allow_pickle=True
+    )['concepts'])]
 
 
 def _save_concepts(configuration: Configuration, concepts):
-    np.savez_compressed(concept_file(configuration), concepts=concepts)
+    np.savez_compressed(
+        concept_file(configuration),
+        concepts=concepts,
+        dtype=object
+    )
 
 
 def global_index_mapping(image_ids) -> np.ndarray:

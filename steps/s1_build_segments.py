@@ -20,7 +20,7 @@ def build_segments(configuration: Configuration, dataset: Dataset) -> None:
     images = dataset.image_id_path_pairs()
 
     if len(images) <= len(glob(segments_path('*.npz'))):
-        print(f'Skipping image segmentation, as all {len(images)} segments already exist on disk...')
+        print(f'Found segments for all {len(images)} images on disk, skipping to the next step...')
         return
 
     print('Segmenting images...')

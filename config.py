@@ -4,8 +4,8 @@ from utils.dataset import Dataset
 from os.path import realpath, dirname, join
 
 configuration = Configuration(
-    num_classes=10,
-    num_clusters=30,
+    num_classes=90,
+    num_clusters=200,
     cluster_accuracy_threshold=50,
 )
 dataset = Dataset(

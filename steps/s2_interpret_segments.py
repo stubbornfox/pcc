@@ -31,7 +31,7 @@ def interpret_segments(configuration: Configuration, dataset: Dataset) -> None:
         # test data.
         include_test_images=True,
         include_train_images=True,
-    ).items(), position=0)
+    ).items(), position=0, leave=False)
 
     print('Interpreting segments...')
     for bird_id, image_ids in bird_progress:
@@ -103,7 +103,7 @@ def load_train_activations_from_disk(dataset: Dataset):
 
 
 def load_activations_of(image_id) -> np.ndarray:
-    return np.load(activation_path(f'{image_id}.npz'))['arr']
+    return np.load(activation_path(f'{image_id}.npz'))['dropouts']
 
 
 def load_correct_predictions_of(image_id) -> np.ndarray:

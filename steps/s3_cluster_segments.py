@@ -19,7 +19,7 @@ def cluster_segments(configuration: Configuration, dataset: Dataset) -> None:
     checkpoint_file = cluster_metrics_file(configuration)
 
     if exists(checkpoint_file):
-        print(f'"{checkpoint_file}" exists, skipping segment clustering...')
+        print('Found existing cluster file, skipping to the next step...')
         return
 
     activations = load_train_activations_from_disk(dataset)

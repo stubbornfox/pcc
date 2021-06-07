@@ -8,10 +8,14 @@ from steps.s5_build_decision_tree import build_decision_tree
 
 from config import configuration, dataset
 
-# Step 1: Segmentation
+def _announce_step(title: str):
+    print(f'\n\n\n{title}\n===================================')
+
+# Step 1: Image Segmentation
 # ==============================================================================
 # In this step we split each source image up into multiple smaller segments.
 # These segments are saved to disk and will be re-used in following steps.
+_announce_step("1: Image Segmentation")
 build_segments(configuration, dataset)
 
 # Step 2: Interpret the segments
@@ -21,6 +25,7 @@ build_segments(configuration, dataset)
 # result. The former is an interpretation of what the network thinks is
 # contained i the image, and the latter can be used in a later step to prune
 # unimportant segments (e.g. parts of the background).
+_announce_step("2: Segment Interpretation")
 interpret_segments(configuration, dataset)
 
 # Step 3: Clustering
@@ -28,6 +33,7 @@ interpret_segments(configuration, dataset)
 # Based on the interpretation of the network gathered from the former step, we
 # group similar segments together. These will then represent prototypical
 # features, e.g. striped wings or a read beak.
+_announce_step("3: Segment Clustering")
 cluster_segments(configuration, dataset)
 
 # Step 4: Concept Discovery
@@ -38,10 +44,12 @@ cluster_segments(configuration, dataset)
 # target class solely based on each segment of the cluster.
 # This accuracy will be higher for segments displaying prototypical parts of a
 # bird and lower for random background noise.
+_announce_step("4: Concept Discovery")
 discover_concepts(configuration, dataset)
 
 
 # Step 5: Decision Tree
 # ==============================================================================
 # Now we are ready to construct a decision tree based on the clusters.
+_announce_step("5: Decision Tree")
 build_decision_tree(configuration, dataset)
