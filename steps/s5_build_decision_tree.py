@@ -54,10 +54,6 @@ def _build_feature_vectors(image_ids, concepts):
 
 
 def _measure_cluster_similarity(activations_of_image, concepts):
-    # TODO: Maybe we can experiment how we build this feature vector.
-    #       I _think_ we could map each _segment_ to it's distance/similarity
-    #       for each cluster. Then for an image we just sum those up to get a
-    #       "heatmap" of which concepts are contained in the image
     cluster_distances_per_concept = []
     similarity = cosine_similarity
 
