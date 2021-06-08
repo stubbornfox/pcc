@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import pickle
 from os.path import join, exists
+from datetime import datetime
 
 import numpy as np
 from sklearn.cluster import KMeans
@@ -25,8 +26,11 @@ def cluster_segments(configuration: Configuration, dataset: Dataset) -> None:
     activations = load_train_activations_from_disk(dataset)
 
     print('Clustering segments...')
+    start = datetime.now()
     model = KMeans(configuration.num_clusters)
     model.fit(activations)
+    end = datetime.now()
+    print(f'Took {start - end}')
 
     print('Saving clusters to disk...')
     _save_cluster_model(configuration, model)
