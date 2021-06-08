@@ -4,7 +4,7 @@
 
 `pip install -r requirements.txt`
 
-The project was tested under Macos using Python 2.7 and 2.9. Due to hardware 
+The project was tested under Macos using Python 3.7 and 3.9. Due to hardware 
 limitations the training was done _without_ cuda support enabled, so on the CPU.
 
 ## Structure
