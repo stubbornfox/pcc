@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import datetime
+
 import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.tree import DecisionTreeClassifier
@@ -14,10 +16,13 @@ from utils.similarity import cosine_similarity
 
 def build_decision_tree(configuration: Configuration, dataset: Dataset) -> None:
     print('Generating training data...')
+    start = datetime.now()
     X_train, Y_train, X_test, Y_test = _generate_train_test_data(
         load_concepts(configuration),
         dataset,
     )
+    end = datetime.now()
+    print(f'Took {end - start}')
 
     print('Building decision tree...')
     model = DecisionTreeClassifier(

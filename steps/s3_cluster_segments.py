@@ -30,7 +30,7 @@ def cluster_segments(configuration: Configuration, dataset: Dataset) -> None:
     model = KMeans(configuration.num_clusters)
     model.fit(activations)
     end = datetime.now()
-    print(f'Took {start - end}')
+    print(f'Took {end - start}')
 
     print('Saving clusters to disk...')
     _save_cluster_model(configuration, model)
