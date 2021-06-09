@@ -5,7 +5,7 @@ from os.path import join, exists
 from datetime import datetime
 
 import numpy as np
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, MiniBatchKMeans
 
 from steps.s2_interpret_segments import load_train_activations_from_disk
 from utils.checkpoints import checkpoint_directory
@@ -27,7 +27,7 @@ def cluster_segments(configuration: Configuration, dataset: Dataset) -> None:
 
     print('Clustering segments...')
     start = datetime.now()
-    model = KMeans(configuration.num_clusters)
+    model = MiniBatchKMeans(configuration.num_clusters)
     model.fit(activations)
     end = datetime.now()
     print(f'Took {end - start}')

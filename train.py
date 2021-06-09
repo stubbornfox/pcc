@@ -52,4 +52,4 @@ discover_concepts(configuration, dataset)
 # ==============================================================================
 # Now we are ready to construct a decision tree based on the clusters.
 _announce_step("5: Decision Tree")
-build_decision_tree(configuration, dataset)
+model = build_decision_tree(configuration, dataset)

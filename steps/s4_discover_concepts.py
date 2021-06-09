@@ -53,6 +53,7 @@ def discover_concepts(configuration: Configuration, dataset: Dataset) -> None:
         concept = (concept_id, k_nearest_concept_indices, centers[cluster_id], cluster_id)
         concepts.append(concept)
 
+    print(f'Saving {len(concepts)} relevant concepts...')
     _save_concepts(configuration, concepts)
 
 def _cluster_accuracy_too_low(

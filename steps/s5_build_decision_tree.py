@@ -3,18 +3,16 @@ from __future__ import annotations
 from datetime import datetime
 
 import numpy as np
-from sklearn.cluster import KMeans
 from sklearn.tree import DecisionTreeClassifier
 
 from steps.s2_interpret_segments import load_activations_of
 from steps.s4_discover_concepts import load_concepts
 from utils.configuration import Configuration
 from utils.dataset import Dataset
-from utils.proto_tree import ProtoTree
 from utils.similarity import cosine_similarity
 
 
-def build_decision_tree(configuration: Configuration, dataset: Dataset) -> None:
+def build_decision_tree(configuration: Configuration, dataset: Dataset):
     print('Generating training data...')
     start = datetime.now()
     X_train, Y_train, X_test, Y_test = _generate_train_test_data(
@@ -35,6 +33,8 @@ def build_decision_tree(configuration: Configuration, dataset: Dataset) -> None:
     print('Accuracy Scores:')
     print(f'\tTrain:\t{model.score(X_train, Y_train, sample_weight=None)}')
     print(f'\tTest:\t{model.score(X_test, Y_test, sample_weight=None)}')
+
+    return model
 
 
 def _generate_train_test_data(concepts, dataset: Dataset):

@@ -12,15 +12,3 @@ dataset = Dataset(
     base_path=join(realpath(dirname(__file__)), 'data', 'CUB_200_2011'),
     configuration=configuration,
 )
-
-# First 100
-# | Clusters | Train | Test |
-# |==========|=======|======|
-# |      200 |    73 |   50 |
-# |      400 |    82 |   58 |
-# |     1000 |    77 |   52 |
-
-# All Birds
-# |      600 |    79 |   54 |
-# |     1000 |       |      |
-# |          |       |      |
