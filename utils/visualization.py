@@ -3,7 +3,7 @@ from __future__ import annotations
 from os.path import join
 
 import numpy as np
-from PIL import Image
+from PIL.Image import Image, open
 from matplotlib import pyplot as plt
 from skimage.segmentation import slic, mark_boundaries
 
@@ -20,10 +20,7 @@ from steps.s4_discover_concepts import load_concepts, global_index_mapping
 
 def view_source_image(image_id: int, resize=False) -> None:
     """Displays the source image file"""
-    image_names_per_id = dict(dataset.image_id_path_pairs())
-    image_name = image_names_per_id[image_id]
-    path = dataset.path(join('images', image_name))
-    image = Image.open(path)
+    image = open_source_image(image_id)
 
     if resize:
         shape = configuration.image_shape
@@ -57,8 +54,7 @@ def view_segments_of(image_id: int) -> None:
 
 def view_segments_on_source_image(image_id):
     """This overlays the generated segments on the source image"""
-    path = dict(dataset.image_id_path_pairs())[image_id]
-    img = Image.open(dataset.path(path))
+    img = open_source_image(image_id)
     im2arr = np.array(img.resize(configuration.image_shape, Image.BILINEAR))
     im2arr = np.float32(im2arr) / 255.0
     resolutions = configuration.segment_resolutions
@@ -116,3 +112,11 @@ def view_concepts(num_concepts=10):
 
         plt.tight_layout()
         plt.show()
+
+
+def open_source_image(image_id) -> Image:
+    image_names_per_id = dict(dataset.image_id_path_pairs())
+    image_name = image_names_per_id[image_id]
+    path = dataset.path(join('images', image_name))
+
+    return open(path)
