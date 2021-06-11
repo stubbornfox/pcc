@@ -21,3 +21,6 @@ class Configuration:
     # The shape that each segment will be resized through, before it is fed
     # through the CNN. This depends on the network used.
     image_shape: tuple[int, int] = (448, 448)
+
+    # The different resolutions that are used when segmenting the source images
+    segment_resolutions = [15, 50, 80]

@@ -35,7 +35,11 @@ def build_segments(configuration: Configuration, dataset: Dataset) -> None:
             shape = configuration.image_shape
             im2arr = np.array(image.resize(shape, Image.BILINEAR))
             im2arr = np.float32(im2arr) / 255.0
-            superpixels, patches = _return_superpixels(im2arr, shape)
+            superpixels, patches = _return_superpixels(
+                im2arr,
+                shape,
+                configuration.segment_resolutions,
+            )
             _save_segment(segment_file_path, superpixels, patches)
 
 
@@ -62,8 +66,7 @@ def _extract_patch(image, mask, image_shape, average_image_value):
     return image_resized, patch
 
 
-def _return_superpixels(im2arr, image_shape):
-    resolutions = [15, 50, 80]
+def _return_superpixels(im2arr, image_shape, resolutions):
     unique_masks = []
     for resolution in resolutions:
         param_masks = []
