@@ -24,3 +24,8 @@ class Configuration:
 
     # The different resolutions that are used when segmenting the source images
     segment_resolutions = [15, 50, 80]
+
+    # To increase the accuracy, one can use variants of the cropped versions of
+    # the images. Just make sure to run crop_images.py before you set this to
+    # True!
+    use_cropped_images = False

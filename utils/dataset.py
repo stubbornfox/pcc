@@ -25,7 +25,7 @@ class Dataset:
         self.base_path = base_path
         self.configuration = configuration
 
-    def path(self, path):
+    def path(self, path=''):
         return join(self.base_path, path)
 
     def image_id_path_pairs(self) -> list[tuple[int, str]]:
@@ -40,10 +40,16 @@ class Dataset:
 
                 bird_id_in_bounds = bird_id <= self.configuration.num_classes
                 is_valid_image = image_id not in self.error_images
-                if bird_id_in_bounds and is_valid_image:
-                    images.append(
-                        (image_id, self.path(join('images', file_name)))
-                    )
+                if not (bird_id_in_bounds and is_valid_image):
+                    continue
+
+                images_dir_name = 'images'
+
+                if self.configuration.use_cropped_images:
+                    images_dir_name += '_cropped'
+
+                full_path_to_image = self.path(join(images_dir_name, file_name))
+                images.append((image_id, full_path_to_image))
 
         return images
 
