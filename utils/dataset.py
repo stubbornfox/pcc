@@ -96,6 +96,23 @@ class Dataset:
 
         return classes
 
+    def classes_per_image_id(
+        self,
+        include_train_images: bool,
+        include_test_images: bool,
+    ) -> dict[int, int]:
+        classes_per_image_id = dict()
+        image_ids_per_class = self.image_ids_per_class(
+            include_train_images,
+            include_test_images,
+        )
+
+        for class_id, image_ids in image_ids_per_class.items():
+            for image_id in image_ids:
+                classes_per_image_id[image_id] = class_id
+
+        return classes_per_image_id
+
     def train_test_image_ids(self):
         bird_ids_per_image_id = dict(self._image_bird_id_pairs(True, True))
         all_train, all_test = self._all_train_test_image_ids()
@@ -133,5 +150,14 @@ class Dataset:
 
         return np.array(train), np.array(test)
 
-    def load_images(self):
-        pass
+    def class_names_per_id(self) -> dict[int, str]:
+        class_names_per_id = dict()
+
+        with open(self.path('classes.txt'), 'r') as file:
+            for line in file:
+                class_id, prefixed_class_name = list(line.strip('\n').split(' '))
+                class_id = int(class_id)
+                class_name = prefixed_class_name[4:].replace('_', ' ')
+                class_names_per_id[class_id] = class_name
+
+        return class_names_per_id
