@@ -5,7 +5,7 @@ from utils.graph.nodes import class_node, edge, cluster_node, class_node_id, clu
 
 # This could be the result from a decision tree, but to keep things simple, we
 # can directly change it here.
-target_class_id = 7
+target_class_id = 1
 print(f'Explaining classification for class {target_class_id}:')
 
 print('Gathering computed data...')

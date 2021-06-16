@@ -5,9 +5,10 @@ from random import sample
 from PIL.Image import fromarray, Image, new as new_image
 
 from steps.s1_build_segments import load_segments_of
+from steps.s2_interpret_segments import load_train_predictions_from_disk
 from steps.s4_discover_concepts import load_concepts, global_index_mapping
 from utils.dataset import Dataset
-
+import math
 '''
     Is concerned with computing things like which segments from which birds are 
     in which clusters / concepts, etc.
@@ -24,16 +25,21 @@ def get_graph_data(dataset: Dataset, target_id: int = None):
     edges = []
     cluster_previews = dict()
 
+    indexes = load_train_predictions_from_disk(dataset)
+    print(indexes)
+
     print('finding related clusters...')
-    related_cluster_ids = _find_related_clusters(target_id, concepts, index_mapping, classes_per_image_id)
+    related_cluster_ids = _find_related_clusters(target_id, concepts, index_mapping, classes_per_image_id, indexes)
     related_class_ids = set()
 
     print('computing edges & cluster previews...')
+
     for _, k_nearest_concept_indices, _, cluster_id in concepts:
         if cluster_id not in related_cluster_ids:
             continue
-
-        concept_mapping = index_mapping[k_nearest_concept_indices]
+        print('k', k_nearest_concept_indices)
+        print('indexes', indexes[k_nearest_concept_indices])
+        concept_mapping = index_mapping[indexes[k_nearest_concept_indices]]
         cluster_previews[cluster_id] = _build_cluster_preview(concept_mapping)
 
         for _, image_id, _ in concept_mapping:
@@ -44,13 +50,13 @@ def get_graph_data(dataset: Dataset, target_id: int = None):
     return related_class_ids, related_cluster_ids, edges, cluster_previews
 
 
-def _find_related_clusters(target_id, concepts, index_mapping, classes_per_image_id) -> set[int]:
+def _find_related_clusters(target_id, concepts, index_mapping, classes_per_image_id, indexes=[]) -> set[int]:
     if target_id is None:
         return set([cluster_id for _, _, _, cluster_id in concepts])
 
     related_cluster_ids = set()
     for _, k_nearest_concept_indices, _, cluster_id in concepts:
-        concept_mapping = index_mapping[k_nearest_concept_indices]
+        concept_mapping = index_mapping[indexes[k_nearest_concept_indices]]
 
         for _, image_id, _ in concept_mapping:
             class_id = classes_per_image_id[image_id]
@@ -62,17 +68,18 @@ def _find_related_clusters(target_id, concepts, index_mapping, classes_per_image
 
 def _build_cluster_preview(local_concept_mapping) -> Image:
     representants = []
-
-    for _, image_id, local_segment_id in sample(list(local_concept_mapping), 9):
+    grid_size = min(len(local_concept_mapping), 9)
+    for _, image_id, local_segment_id in sample(list(local_concept_mapping), grid_size):
         segments_of_image = load_segments_of(image_id)
         segment = segments_of_image[local_segment_id]
         representants.append(fromarray(segment))
-
-    return _image_grid(representants, 3, 3)
+    size = math.floor(math.sqrt(grid_size))
+    print(size)
+    return _image_grid(representants, size, size)
 
 
 def _image_grid(images, rows, cols):
-    assert len(images) == rows * cols
+    # assert len(images) == rows * cols
 
     w, h = images[0].size
     grid = new_image('RGB', size=(cols * w, rows * h))

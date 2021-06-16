@@ -33,3 +33,5 @@ class Configuration:
 
     # Either 'ntsnet' (default), 'resnet256' or 'resnet128'
     network = 'ntsnet'
+
+    cluster_activation_type = 'entire_activation'

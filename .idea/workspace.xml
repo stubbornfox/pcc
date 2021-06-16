@@ -20,15 +20,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="28996273-d3ad-4646-b594-2d179f640ff4" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/predict.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/graph/predict.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/steps/s3_cluster_segment_each_class.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/graph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/predict.py" beforeDir="false" afterPath="$PROJECT_DIR$/predict.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/steps/s2_interpret_segments.py" beforeDir="false" afterPath="$PROJECT_DIR$/steps/s2_interpret_segments.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/steps/s3_cluster_segments.py" beforeDir="false" afterPath="$PROJECT_DIR$/steps/s3_cluster_segments.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/steps/s4_discover_concepts.py" beforeDir="false" afterPath="$PROJECT_DIR$/steps/s4_discover_concepts.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/steps/s5_build_decision_tree.py" beforeDir="false" afterPath="$PROJECT_DIR$/steps/s5_build_decision_tree.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utils/configuration.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/configuration.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/visualization.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/graph/graph_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/graph/graph_data.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,13 +78,13 @@
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/data/pre-trained-models" />
       <recent name="$PROJECT_DIR$/data/checkpoints/predictions" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/" />
     </key>
   </component>
   <component name="RunManager">

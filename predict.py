@@ -10,8 +10,8 @@ from sklearn.metrics import accuracy_score
 train_ids, test_ids = dataset.train_test_image_ids()
 Y_train, Y_test = dataset.train_test_class_ids()
 np.random.seed(42)
-predict_bird(test_ids[908:909], configuration)
-print(Y_test[908])
+predict_bird(test_ids[150:151], configuration)
+print(Y_test[150])
 # test_ids = np.random.choice(test_ids, 5)
 # index_mapping = global_index_mapping(train_ids)
 # a = []

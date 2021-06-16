@@ -30,7 +30,7 @@ def build_decision_tree(configuration: Configuration, dataset: Dataset):
 
     print('Building decision tree...')
     model = RandomForestClassifier(
-        min_samples_split=10,
+        min_samples_split=15,
         min_samples_leaf=10,
         n_estimators = 100,
         max_depth = configuration.max_depth,
@@ -226,14 +226,32 @@ def _save_tree_model(configuration: Configuration, model: RandomForestClassifier
     with open(tree_model_file(configuration), "wb") as file:
         pickle.dump(model, file)
 
+def feature_path(path=''):
+    return checkpoint_directory(join('feature', path))
+
+def feature_file(c: Configuration):
+    return feature_path(f'{c.num_clusters}_{c.num_classes}.npz')
+
+def _save_features(X_train, X_test, c: Configuration):
+    ensure_directory_exists(feature_path())
+    np.savez_compressed(feature_file(c), train=X_train, test=X_test)
+
+def _load_features(c: Configuration):
+    features = np.load(feature_file(c))
+    train, test = features['train'], features['test']
+    return train, test
+
 def _generate_train_test_data(concepts, dataset: Dataset):
     train_image_ids, test_image_ids = dataset.train_test_image_ids()
 
     Y_train, Y_test = dataset.train_test_class_ids()
 
-    X_train = _build_feature_vectors(train_image_ids, concepts)
-    X_test = _build_feature_vectors(test_image_ids, concepts)
-
+    if exists(feature_file(dataset.configuration)):
+        X_train, X_test = _load_features(dataset.configuration)
+    else:
+        X_train = _build_feature_vectors(train_image_ids, concepts)
+        X_test = _build_feature_vectors(test_image_ids, concepts)
+        _save_features(X_train, X_test, dataset.configuration)
     return X_train, Y_train, X_test, Y_test
 
 
