@@ -41,3 +41,4 @@ display_graph(
     root_id=class_node_id(target_class_id),
     elements=class_nodes + cluster_nodes + edges,
 )
+

@@ -17,6 +17,8 @@ class Configuration:
     # contain in order to be seen as meaningful.
     cluster_accuracy_threshold: int
 
+    max_depth: int
+
     # The shape that each segment will be resized through, before it is fed
     # through the CNN. This depends on the network used.
     image_shape: tuple[int, int] = (448, 448)

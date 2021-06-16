@@ -9,10 +9,11 @@ configuration = Configuration(
     num_classes=200,
     num_clusters=1000,
     cluster_accuracy_threshold=50,
+    max_depth=100
 )
 # configuration.use_cropped_images = True
 # configuration.network = 'resnet128'
-configuration.network = 'resnet256'
+# configuration.network = 'resnet256'
 
 readable = '\n'.join([
     f'{key}: {value}'
