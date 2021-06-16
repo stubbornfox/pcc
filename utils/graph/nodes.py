@@ -16,7 +16,7 @@ from utils.graph.loader import GraphDatasetLoader
 graph_dataset_loader = GraphDatasetLoader(dataset)
 
 
-def node_with_image(node_id, label: str, image: str, size=(100, 100)):
+def node_with_image(node_id, label: str, image: str, size=(300, 300)):
     return {
         'data': {
             'id': node_id,
@@ -35,7 +35,7 @@ def class_node(class_id):
 
     return node_with_image(
         node_id=class_node_id(class_id),
-        label=graph_dataset_loader.bird_name(class_id),
+        label=graph_dataset_loader.bird_name(class_id) + f' ({class_node_id(class_id)})',
         image=data_uri,
         size=size,
     )
@@ -53,20 +53,14 @@ def cluster_node(cluster_id, cluster_preview_image):
     )
 
 
-def edge(source: str, target: str, color):
+def edge(source: str, target: str):
     return {
         'data': {'source': source, 'target': target},
-        'style': {'line-color': color}
     }
 
 
-def _image_node_style(data_uri, size=(100, 100)):
+def _image_node_style(data_uri, size):
     width, height = size
-    largest_extend = max(width, height)
-
-    if (largest_extend > 100):
-        aspect_ratio = width / height
-
 
     return {
         'width': f'{width}px',

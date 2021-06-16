@@ -7,14 +7,18 @@ import dash_html_components as html
 cyto.load_extra_layouts()
 app = dash.Dash("Concept Visualization")
 
-def display_graph(elements: list):
+def display_graph(elements: list, root_id: str):
     app.layout = html.Div([
         cyto.Cytoscape(
             id='concept-visualization',
             style={'width': '100vw', 'height': '100vh'},
             layout={
-                'name': 'concentric',
+                'name': 'breadthfirst',
                 'animate': True,
+                # Here you can put the node that should be the focus of the
+                # graph. It will be placed at the top, with all it's concepts
+                # being placed directly below it.
+                'roots': f'[id="{root_id}"]',
             },
             elements=elements
         )

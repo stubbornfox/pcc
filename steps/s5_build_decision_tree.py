@@ -15,8 +15,10 @@ from utils.similarity import cosine_similarity
 def build_decision_tree(configuration: Configuration, dataset: Dataset):
     print('Generating training data...')
     start = datetime.now()
+    concepts = load_concepts(configuration)
+    print('num concepts:' + str(len(concepts) ))
     X_train, Y_train, X_test, Y_test = _generate_train_test_data(
-        load_concepts(configuration),
+        concepts,
         dataset,
     )
     end = datetime.now()

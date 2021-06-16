@@ -15,7 +15,6 @@ class Configuration:
 
     # The minimum percentage of correctly predicted segments a cluster should
     # contain in order to be seen as meaningful.
-    # TODO: reference clustering.py here
     cluster_accuracy_threshold: int
 
     # The shape that each segment will be resized through, before it is fed
