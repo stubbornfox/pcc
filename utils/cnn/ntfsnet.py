@@ -2,32 +2,10 @@ from __future__ import annotations
 
 import numpy as np
 import torch
-from torch import cuda, Tensor
+from torch import Tensor
 from torch.nn import Module
 
-
-def device() -> str:
-    return 'cuda' if cuda.is_available() else 'cpu'
-
-
-_model = None
-def model():
-    global _model
-    if _model is None:
-        _model = torch.hub.load(
-            'nicolalandro/ntsnet-cub200',
-            model='ntsnet',
-            pretrained=True,
-            **{
-                'topN': 6,
-                'device': device(),
-                'num_classes': 200
-            }
-        )
-        _model.eval()
-
-    return _model
-
+from utils.cnn.utils import device
 
 class NtsNetWrapper:
     """
@@ -44,8 +22,18 @@ class NtsNetWrapper:
     _last_dropout: Tensor = [None]
     _last_activation: Tensor = [None]
 
-    def __init__(self, model):
-        self.model = model
+    def __init__(self):
+        self.model = torch.hub.load(
+            'nicolalandro/ntsnet-cub200',
+            model='ntsnet',
+            pretrained=True,
+            **{
+                'topN': 6,
+                'device': device(),
+                'num_classes': 200
+            }
+        )
+        self.model.eval()
 
     def interpret(self, input: Tensor) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
         dropout_layer = self.model.pretrained_model.dropout

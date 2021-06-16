@@ -28,3 +28,6 @@ class Configuration:
     # the images. Just make sure to run crop_images.py before you set this to
     # True!
     use_cropped_images = False
+
+    # Either 'ntsnet' (default), 'resnet256' or 'resnet128'
+    network = 'ntsnet'

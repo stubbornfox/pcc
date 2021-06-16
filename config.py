@@ -6,11 +6,13 @@ from utils.dataset import Dataset
 from os.path import realpath, dirname, join
 
 configuration = Configuration(
-    num_classes=20,
-    num_clusters=60,
-    cluster_accuracy_threshold=25,
+    num_classes=200,
+    num_clusters=1000,
+    cluster_accuracy_threshold=50,
 )
-configuration.use_cropped_images = True
+# configuration.use_cropped_images = True
+# configuration.network = 'resnet128'
+configuration.network = 'resnet256'
 
 readable = '\n'.join([
     f'{key}: {value}'

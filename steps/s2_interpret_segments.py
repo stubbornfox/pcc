@@ -8,9 +8,10 @@ from torchvision.transforms import transforms
 from tqdm import tqdm
 
 from steps.s1_build_segments import load_segments_of
-from utils import cnn
+
 from utils.checkpoints import checkpoint_directory
-from utils.cnn import NtsNetWrapper
+from utils.cnn.ntfsnet import NtsNetWrapper
+from utils.cnn.resnet.resnet_wrapper import ResNetWrapper
 from utils.configuration import Configuration
 from utils.dataset import Dataset
 from utils.paths import ensure_directory_exists
@@ -19,8 +20,9 @@ from utils.paths import ensure_directory_exists
 def interpret_segments(configuration: Configuration, dataset: Dataset) -> None:
     ensure_directory_exists(activation_path())
     ensure_directory_exists(prediction_path())
+    use_resnet = True
 
-    model = NtsNetWrapper(cnn.model())
+    model = ResNetWrapper(configuration) if use_resnet else NtsNetWrapper()
     processing_pipeline = transforms.Compose([
       transforms.ToTensor(),
       transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
