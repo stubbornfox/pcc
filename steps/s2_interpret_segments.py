@@ -20,7 +20,7 @@ from utils.paths import ensure_directory_exists
 def interpret_segments(configuration: Configuration, dataset: Dataset) -> None:
     ensure_directory_exists(activation_path())
     ensure_directory_exists(prediction_path())
-    use_resnet = True
+    use_resnet = configuration.network.startswith('resnet')
 
     model = ResNetWrapper(configuration) if use_resnet else NtsNetWrapper()
     processing_pipeline = transforms.Compose([
