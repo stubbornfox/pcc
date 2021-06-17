@@ -1,0 +1,59 @@
+from config import dataset
+from utils.graph.framework import display_decision_tree
+from utils.graph.graph_data import get_cluster_previews, image_segment
+from utils.graph.nodes import edge_weight, class_node, edge, cluster_node, class_node_id, cluster_node_id, segment_node_id, segment_node
+from steps.s5_build_decision_tree import predict_bird
+from steps.s1_build_segments import load_segments_of
+
+
+def draw_decision_path(image_id, dataset):
+    classes_per_image_id = dataset.classes_per_image_id(True, True)
+    class_id = classes_per_image_id[image_id]
+    segments = load_segments_of(image_id)
+    predict_class, concept_ids, weights, local_segment_ids = predict_bird([image_id], dataset.configuration)
+    print('Predict Class:', predict_class[0])
+    print('Actual Class', class_id)
+
+    bird_segments = []
+
+    for local_segment_id in local_segment_ids:
+        bird_segments.append(image_segment(local_segment_id, segments))
+
+
+    cluster_previews = get_cluster_previews(concept_ids, dataset)
+
+    cluster_nodes = [
+        cluster_node(cluster_id, preview_image, weight="{:.2f}".format(weight))
+        for (cluster_id, preview_image), weight
+        in zip(cluster_previews.items(), weights)
+    ]
+
+    segment_nodes = [
+        segment_node(segment_id, bird_segment)
+        for segment_id, bird_segment in zip(local_segment_ids, bird_segments)
+    ]
+
+    edges = []
+
+    for segment_id, concept_id, weight in zip(local_segment_ids, concept_ids, weights):
+        edges.append(edge_weight(
+            source=segment_node_id(segment_id),
+            target=cluster_node_id(concept_id),
+            weight= weight,
+        ))
+
+    for segment_id in local_segment_ids:
+        edges.append(edge(
+            source=class_node_id(class_id),
+            target=segment_node_id(segment_id),
+        ))
+
+
+    bird_nodes = [class_node(class_id, image_id)]
+    display_decision_tree(
+        root_id=class_node_id(class_id),
+        elements=bird_nodes + cluster_nodes + segment_nodes + edges
+    )
+# draw_decision_path(1, dataset)
+draw_decision_path(868, dataset)
+# draw_decision_path(1000, dataset)

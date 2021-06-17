@@ -26,15 +26,18 @@ class GraphDatasetLoader:
         self.image_ids_per_class = dataset.image_ids_per_class(True, True)
         self.class_names_per_id = dataset.class_names_per_id()
 
-    def class_image_as_data_uri(self, class_id: int) -> str:
-        image_ids_of_class = self.image_ids_per_class[class_id]
-        image = self._load_image(choice(image_ids_of_class))
+    def class_image_as_data_uri(self, class_id: int, image_id = None) -> str:
+        if image_id == None:
+            image_ids_of_class = self.image_ids_per_class[class_id]
+            image_id = choice(image_ids_of_class)
+        image = self._load_image(image_id)
 
         buffer = BytesIO()
         image.save(buffer, format='png')
         base_64 = b64encode(buffer.getvalue()).decode('utf-8')
 
         return f'data:image/png;base64,{base_64}', image.size
+
 
     def _load_image(self, image_id: int) -> Image:
         image_name = self.image_paths_per_id[image_id]

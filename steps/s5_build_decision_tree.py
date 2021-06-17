@@ -6,7 +6,6 @@ import numpy as np
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 import pickle
-from steps.s1_build_segments import load_segments_of
 from steps.s2_interpret_segments import load_activations_of
 from steps.s4_discover_concepts import load_concepts
 from utils.configuration import Configuration
@@ -68,9 +67,9 @@ def explore_tree(X_test, estimator, n_nodes, children_left,children_right, featu
             stack.append((children_right[node_id], parent_depth + 1))
         else:
             is_leaves[node_id] = True
-
-    print("The binary tree structure has %s nodes"
-          % n_nodes)
+    if draw_tree:
+        print("The binary tree structure has %s nodes"
+              % n_nodes)
     if print_tree:
         print("Tree structure: \n")
         for i in range(n_nodes):
@@ -107,73 +106,50 @@ def explore_tree(X_test, estimator, n_nodes, children_left,children_right, featu
     node_index = node_indicator.indices[node_indicator.indptr[sample_id]:
                                         node_indicator.indptr[sample_id + 1]]
 
-    # print(X_test[sample_id,:])
-
-    print('Rules used to predict sample %s: ' % sample_id)
     count = 0
     feature_ids = []
-    signs = []
+    weights = []
     for node_id in node_index:
         tabulation = " "*node_depth[node_id] #-> makes tabulation of each level of the tree
         # tabulation = ""
         count += 1
-        feature_ids.append(feature[node_id])
+
         if leave_id[sample_id] == node_id:
-            print("%s==> Predicted leaf index \n"%(tabulation))
             if draw_tree:
-                return feature_ids
+                print("%s==> Predicted leaf index \n" % (tabulation))
+                return feature_ids, weights
             else:
                 return count
-            #continue
         if (X_test[sample_id][feature[node_id]] <= threshold[node_id]):
             threshold_sign = "<="
         else:
             threshold_sign = ">"
+            feature_ids.append(feature[node_id])
+            weights.append(X_test[sample_id][feature[node_id]])
+        if draw_tree:
+            print("%sdecision id node %s : (X_test[%s, '%s'] (= %s) %s %s)"
+                  % (tabulation,
+                     node_id,
+                     sample_id,
+                     feature_names[feature[node_id]],
+                     X_test[sample_id][feature[node_id]],
+                     threshold_sign,
+                     threshold[node_id]))
 
-        print("%sdecision id node %s : (X_test[%s, '%s'] (= %s) %s %s)"
-              % (tabulation,
-                 node_id,
-                 sample_id,
-                 feature_names[feature[node_id]],
-                 X_test[sample_id][feature[node_id]],
-                 threshold_sign,
-                 threshold[node_id]))
-    print("%sPrediction for sample %d: %s"%(tabulation,
-                                          sample_id,
-                                          estimator.predict(X_test)[sample_id]))
 
-    # For a group of samples, we have the following common node.
-    # # sample_ids = [sample_id, 1]
-    # # common_nodes = (node_indicator.toarray()[sample_ids].sum(axis=0) ==
-    # #                 len(sample_ids))
-    # #
-    # # common_node_id = np.arange(n_nodes)[common_nodes]
-    # #
-    # # print("\nThe following samples %s share the node %s in the tree"
-    # #       % (sample_ids, common_node_id))
-    # # print("It is %s %% of all nodes." % (100 * len(common_node_id) / n_nodes,))
-    #
-    # for sample_id_ in sample_ids:
-    #     print("Prediction for sample %d: %s"%(sample_id_,
-    #                                       estimator.predict(X_test)[sample_id_]))
 
 def predict_bird(bird_ids, configuration):
     model = load_tree_model(configuration)
     concepts = load_concepts(configuration)
     bird_id = bird_ids[:1][0]
-    segments = load_segments_of(bird_id)
     act_index_closest_to_clusters = _act_index_compare_to_cluster(load_activations_of(bird_id), concepts)
     X_train = _build_feature_vectors([bird_id], concepts)
     X_train = np.array(X_train)
     bird_class = model.predict(X_train)
-    # model.estimators_[1]
     true_tree = []
 
     for i, e in enumerate(model.estimators_):
         bird = int(e.predict(X_train)[0])
-
-        print(bird)
-        print('0', bird_class[0])
         if bird_class[0] == bird:
             true_tree.append(i)
     true_tree = np.array(true_tree)
@@ -186,30 +162,21 @@ def predict_bird(bird_ids, configuration):
     min_i = 0
 
     feature_names = ["Feature_%d" % i for i in range(X_train.shape[1])]
-    print(feature_names)
     for i, e in enumerate(model.estimators_):
         if i in true_tree:
-            print("Tree %d\n" % i)
             a = explore_tree(X_train, model.estimators_[i], n_nodes_[i], children_left_[i],
                          children_right_[i], feature_[i], threshold_[i],
                          suffix=i, sample_id=0, feature_names=feature_names)
             if a < min_nodes:
                 min_nodes = a
                 min_i = i
-            print('\n' * 2)
     i = min_i
     print('Good prediction')
-    print(feature_[i])
-    feature_ids = explore_tree(X_train, model.estimators_[i], n_nodes_[i], children_left_[i],
+    feature_ids, weights = explore_tree(X_train, model.estimators_[i], n_nodes_[i], children_left_[i],
                  children_right_[i], feature_[i], threshold_[i],
                  suffix=i, sample_id=0, feature_names=feature_names, draw_tree=True)
     segments_index = act_index_closest_to_clusters[feature_ids]
-    print(len(feature_ids))
-    # for si, fi in zip(segments_index, feature_ids):
-
-    # print('min', np.min(np.array(estimator_depth)))
-    print(bird_class)
-    return bird_class
+    return bird_class, feature_ids, weights, segments_index
 
 def tree_path(path=''):
     return checkpoint_directory(join('tree', path))

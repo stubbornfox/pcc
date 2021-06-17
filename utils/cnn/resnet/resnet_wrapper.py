@@ -22,7 +22,7 @@ class ResNetWrapper:
         if not network.startswith('resnet'):
             raise Exception('Resnet is used, but not configured!')
 
-        num_features = int(network.removeprefix('resnet'))
+        num_features = int(network[-3:])
 
         self.model = _model(configuration.num_classes, num_features)
         pass

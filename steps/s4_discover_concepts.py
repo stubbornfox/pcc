@@ -24,7 +24,7 @@ def discover_concepts(configuration: Configuration, dataset: Dataset) -> None:
 
     # TODO: Why these exact values?
     #       Maybe we can move them to the configuration object?
-    min_imgs = 10
+    min_imgs = 1
     max_imgs = 40
 
     cluster_ids, all_costs, centers = load_cluster_metrics(configuration)
