@@ -18,6 +18,7 @@ from utils.paths import ensure_directory_exists
 def build_decision_tree(configuration: Configuration, dataset: Dataset):
     print('Generating training data...')
     start = datetime.now()
+
     concepts = load_concepts(configuration)
     print('num concepts:' + str(len(concepts) ))
     X_train, Y_train, X_test, Y_test = _generate_train_test_data(
@@ -26,6 +27,13 @@ def build_decision_tree(configuration: Configuration, dataset: Dataset):
     )
     end = datetime.now()
     print(f'Took {end - start}')
+
+    if exists(tree_model_file(configuration)):
+        model = load_tree_model(configuration)
+        print('Accuracy Scores:')
+        print(f'\tTrain:\t{model.score(X_train, Y_train, sample_weight=None)}')
+        print(f'\tTest:\t{model.score(X_test, Y_test, sample_weight=None)}')
+        return model
 
     print('Building decision tree...')
     model = RandomForestClassifier(

@@ -40,7 +40,7 @@ def draw_decision_path(image_id, dataset):
         edges.append(edge_weight(
             source=segment_node_id(segment_id),
             target=cluster_node_id(concept_id),
-            weight= weight,
+            weight=weight,
         ))
 
     for segment_id in local_segment_ids:
