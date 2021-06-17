@@ -31,7 +31,7 @@ def class_node_id(class_id) -> str:
     return f'class-{class_id}'
 
 
-def class_node(class_id, image_id = None):
+def class_node(class_id, image_id=None):
     data_uri, size = graph_dataset_loader.class_image_as_data_uri(class_id, image_id)
 
     return node_with_image(
