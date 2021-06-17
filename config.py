@@ -14,8 +14,6 @@ configuration = Configuration(
 configuration.use_cropped_images = False
 # configuration.network = 'resnet128'
 # configuration.network = 'resnet256'
-# configuration.cluster_activation_type = 'entire_activation'
-# configuration.cluster_activation_type = 'meaning_activation'
 
 readable = '\n'.join([
     f'{key}: {value}'

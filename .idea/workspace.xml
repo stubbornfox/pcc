@@ -20,19 +20,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="28996273-d3ad-4646-b594-2d179f640ff4" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/decision_path.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/predict.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/steps/s3_cluster_segment_each_class.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/steps/s4_discover_concepts.py" beforeDir="false" afterPath="$PROJECT_DIR$/steps/s4_discover_concepts.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/steps/s5_build_decision_tree.py" beforeDir="false" afterPath="$PROJECT_DIR$/steps/s5_build_decision_tree.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/cnn/resnet/resnet_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/cnn/resnet/resnet_wrapper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/graph/framework.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/graph/framework.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/graph/graph_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/graph/graph_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/graph/loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/graph/loader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/graph/nodes.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/graph/nodes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/graph/predict.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/decision_path.py" beforeDir="false" afterPath="$PROJECT_DIR$/decision_path.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/steps/s2_interpret_segments.py" beforeDir="false" afterPath="$PROJECT_DIR$/steps/s2_interpret_segments.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/configuration.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/configuration.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -227,11 +219,11 @@
     <state x="697" y="448" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.25.1792.1010@0.25.1792.1010" timestamp="1622489963473" />
     <state x="697" y="449" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.25.1792.1013@0.25.1792.1013" timestamp="1621454358850" />
     <state x="697" y="451" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.25.1792.1017@0.25.1792.1017" timestamp="1621274279486" />
-    <state x="638" y="538" width="597" height="492" key="find.popup" timestamp="1623967864235">
+    <state x="638" y="538" width="597" height="492" key="find.popup" timestamp="1623968318790">
       <screen x="0" y="25" width="1792" height="1008" />
     </state>
     <state x="638" y="536" width="597" height="490" key="find.popup/0.25.1792.1005@0.25.1792.1005" timestamp="1623451949987" />
-    <state x="638" y="538" width="597" height="492" key="find.popup/0.25.1792.1008@0.25.1792.1008" timestamp="1623967864235" />
+    <state x="638" y="538" width="597" height="492" key="find.popup/0.25.1792.1008@0.25.1792.1008" timestamp="1623968318790" />
     <state x="638" y="539" width="597" height="490" key="find.popup/0.25.1792.1010@0.25.1792.1010" timestamp="1622483157444" />
     <state x="638" y="541" width="597" height="490" key="find.popup/0.25.1792.1013@0.25.1792.1013" timestamp="1622292784823" />
     <state x="638" y="543" width="597" height="490" key="find.popup/0.25.1792.1017@0.25.1792.1017" timestamp="1621253977259" />

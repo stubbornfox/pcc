@@ -101,9 +101,7 @@ def load_train_activations_from_disk(dataset: Dataset):
         activation_batch = list(np.load(activation_file)['dropouts'])
         all_activations.extend(activation_batch)
     all_activations = np.array(all_activations)
-    if dataset.configuration.cluster_activation_type == 'meaning_activation':
-        all_activations = all_activations[load_train_predictions_from_disk(dataset)]
-    print(len(all_activations))
+    all_activations = all_activations[load_train_predictions_from_disk(dataset)]
     return all_activations
 
 def load_train_predictions_from_disk(dataset: Dataset):

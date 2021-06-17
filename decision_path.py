@@ -23,7 +23,7 @@ def draw_decision_path(image_id, dataset):
     cluster_previews = get_cluster_previews(concept_ids, dataset)
 
     cluster_nodes = [
-        cluster_node(cluster_id, preview_image, weight="{:.2f}".format(weight))
+        cluster_node(cluster_id, preview_image, weight="Similarity: {:.2f}".format(weight))
         for (cluster_id, preview_image), weight
         in zip(cluster_previews.items(), weights)
     ]
@@ -54,6 +54,6 @@ def draw_decision_path(image_id, dataset):
         root_id=class_node_id(class_id),
         elements=bird_nodes + cluster_nodes + segment_nodes + edges
     )
-# draw_decision_path(1, dataset)
-draw_decision_path(868, dataset)
+draw_decision_path(2, dataset)
+# draw_decision_path(868, dataset)
 # draw_decision_path(1000, dataset)

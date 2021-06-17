@@ -34,4 +34,5 @@ class Configuration:
     # Either 'ntsnet' (default), 'resnet256' or 'resnet128'
     network = 'ntsnet'
 
-    cluster_activation_type = 'entire_activation'
+    # This code only support meaning activation cluster
+    cluster_activation_type = 'meaning_activation'
