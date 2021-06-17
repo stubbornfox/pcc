@@ -5,6 +5,7 @@ from utils.graph.nodes import edge_weight, class_node, edge, cluster_node, class
 from steps.s5_build_decision_tree import predict_bird
 from steps.s1_build_segments import load_segments_of
 
+target_bird_id = 1 # 868, 1000
 
 def draw_decision_path(image_id, dataset):
     classes_per_image_id = dataset.classes_per_image_id(True, True)
@@ -54,6 +55,5 @@ def draw_decision_path(image_id, dataset):
         root_id=class_node_id(class_id),
         elements=bird_nodes + cluster_nodes + segment_nodes + edges
     )
-draw_decision_path(2, dataset)
-# draw_decision_path(868, dataset)
-# draw_decision_path(1000, dataset)
+
+draw_decision_path(target_bird_id, dataset)
