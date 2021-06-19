@@ -83,7 +83,6 @@ def interpret_segments(configuration: Configuration, dataset: Dataset) -> None:
                 correct=np.array(predictions) == bird_id
             )
 
-
 def activation_path(path=''):
     return checkpoint_directory(join('activations', path))
 
@@ -122,3 +121,20 @@ def load_activations_of(image_id) -> np.ndarray:
 
 def load_correct_predictions_of(image_id) -> np.ndarray:
     return np.load(prediction_path(f'{image_id}.npz'))['correct']
+
+def interpret_an_image(segments, configuration):
+    use_resnet = configuration.network.startswith('resnet')
+    model = ResNetWrapper(configuration) if use_resnet else NtsNetWrapper()
+    processing_pipeline = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
+    ])
+    dropouts = []
+
+    for segment in segments:
+        input_tensor = processing_pipeline(segment)
+        input_batch = input_tensor.unsqueeze(0)
+
+        [_, dropout, _] = model.interpret(input_batch)
+        dropouts.append(dropout)
+    return np.array(dropouts)

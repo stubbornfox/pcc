@@ -102,3 +102,15 @@ def _return_superpixels(im2arr, image_shape, resolutions):
             patches.append(patch)
 
         return superpixels, patches
+
+def segment_an_image(image, configuration):
+  shape = configuration.image_shape
+  im2arr = np.array(image.resize(shape, Image.BILINEAR))
+  im2arr = np.float32(im2arr) / 255.0
+  superpixels, _ = _return_superpixels(
+    im2arr,
+    shape,
+    configuration.segment_resolutions,
+  )
+  superpixels = np.array(superpixels)
+  return (superpixels*255).astype(np.uint8)

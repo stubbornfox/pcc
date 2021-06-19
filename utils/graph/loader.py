@@ -38,6 +38,12 @@ class GraphDatasetLoader:
 
         return f'data:image/png;base64,{base_64}', image.size
 
+    def image_as_data_uri(self, image) -> str:
+        buffer = BytesIO()
+        image.save(buffer, format='png')
+        base_64 = b64encode(buffer.getvalue()).decode('utf-8')
+
+        return f'data:image/png;base64,{base_64}', image.size
 
     def _load_image(self, image_id: int) -> Image:
         image_name = self.image_paths_per_id[image_id]

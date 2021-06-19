@@ -142,12 +142,15 @@ def explore_tree(X_test, estimator, n_nodes, children_left, children_right, feat
                threshold_sign,
                threshold[node_id]))
 
+def predict_bird_by_id(bird_id, configuration):
+  activations = load_activations_of(bird_id)
+  return predict_bird_by_activation(activations, configuration)
 
-def predict_bird(bird_id, configuration):
+def predict_bird_by_activation(bird_activations, configuration):
   model = load_tree_model(configuration)
   concepts = load_concepts(configuration)
-  act_index_closest_to_clusters = _act_index_compare_to_cluster(load_activations_of(bird_id), concepts)
-  X_train = _build_feature_vectors([bird_id], concepts)
+  act_index_closest_to_clusters = _act_index_compare_to_cluster(bird_activations, concepts)
+  X_train = [_measure_cluster_similarity(bird_activations, concepts)]
   X_train = np.array(X_train)
   bird_class = model.predict(X_train)
   true_tree = []
@@ -194,7 +197,11 @@ def tree_model_file(c: Configuration):
 
 
 def load_tree_model(configuration: Configuration) -> RandomForestClassifier:
-  with open(tree_model_file(configuration), 'rb') as file:
+  file_name = 'tree_model.pkl'
+  if not exists(file_name):
+    file_name = tree_model_file(configuration)
+    print('load from tree data')
+  with open(file_name, 'rb') as file:
     return pickle.load(file)
 
 

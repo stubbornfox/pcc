@@ -20,13 +20,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="28996273-d3ad-4646-b594-2d179f640ff4" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/tree_model.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/decision_path.py" beforeDir="false" afterPath="$PROJECT_DIR$/decision_path.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/graph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/steps/s2_interpret_segments.py" beforeDir="false" afterPath="$PROJECT_DIR$/steps/s2_interpret_segments.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/steps/s3_cluster_segments.py" beforeDir="false" afterPath="$PROJECT_DIR$/steps/s3_cluster_segments.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/steps/s5_build_decision_tree.py" beforeDir="false" afterPath="$PROJECT_DIR$/steps/s5_build_decision_tree.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/configuration.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/configuration.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,7 +61,7 @@
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/data/pre-trained-models" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -74,13 +71,14 @@
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/data/pre-trained-models" />
-      <recent name="$PROJECT_DIR$/data/checkpoints/predictions" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/data/pre-trained-models" />
+      <recent name="$PROJECT_DIR$/data/checkpoints/predictions" />
     </key>
   </component>
   <component name="RunManager">
