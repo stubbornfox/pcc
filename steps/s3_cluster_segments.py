@@ -42,11 +42,11 @@ def cluster_path(path=''):
 
 
 def cluster_metrics_file(c: Configuration):
-    return cluster_path(f'{c.num_clusters}_{c.num_classes}_{c.cluster_activation_type}.npz')
+    return cluster_path(f'{c.num_clusters}_{c.num_classes}.npz')
 
 
 def cluster_model_file(c: Configuration):
-    return cluster_path(f'{c.num_clusters}_{c.num_classes}_{c.cluster_activation_type}.pkl')
+    return cluster_path(f'{c.num_clusters}_{c.num_classes}.pkl')
 
 
 def load_cluster_metrics(configuration: Configuration):

@@ -17,6 +17,7 @@ class Configuration:
     # contain in order to be seen as meaningful.
     cluster_accuracy_threshold: int
 
+    # The max depth of random forest model
     max_depth: int
 
     # The shape that each segment will be resized through, before it is fed
@@ -33,6 +34,3 @@ class Configuration:
 
     # Either 'ntsnet' (default), 'resnet256' or 'resnet128'
     network = 'ntsnet'
-
-    # This code only support meaning activation cluster
-    cluster_activation_type = 'meaning_activation'

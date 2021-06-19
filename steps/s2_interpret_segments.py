@@ -45,7 +45,7 @@ def interpret_segments(configuration: Configuration, dataset: Dataset) -> None:
             activation_file = activation_path(f'{image_id}.npz')
             prediction_file = prediction_path(f'{image_id}.npz')
 
-            if exists(activation_file) or exists(prediction_file):
+            if exists(activation_file) and exists(prediction_file):
                 continue
 
             pre_trained_model_outputs = []
