@@ -41,6 +41,16 @@ def class_node(class_id, image_id=None):
         size=size,
     )
 
+def class_node_image_src(class_id, image):
+    data_uri, size = graph_dataset_loader.image_as_data_uri(image)
+
+    return node_with_image(
+        node_id=class_node_id(class_id),
+        label=graph_dataset_loader.bird_name(class_id) + f' ({class_node_id(class_id)})',
+        image=image,
+        size=size,
+    )
+
 def cluster_node_id(cluster_id) -> str:
     return f'cluster-{cluster_id}'
 
