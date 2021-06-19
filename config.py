@@ -7,12 +7,13 @@ from os.path import realpath, dirname, join
 
 configuration = Configuration(
     num_classes=200,
-    num_clusters=1000,
-    cluster_accuracy_threshold=50,
+    num_clusters=2000,
+    cluster_accuracy_threshold=0,
+    max_depth=None
 )
-# configuration.use_cropped_images = True
+configuration.use_cropped_images = False
 # configuration.network = 'resnet128'
-configuration.network = 'resnet256'
+# configuration.network = 'resnet256'
 
 readable = '\n'.join([
     f'{key}: {value}'

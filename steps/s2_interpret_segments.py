@@ -100,9 +100,21 @@ def load_train_activations_from_disk(dataset: Dataset):
         activation_file = activation_path(f'{image_id}.npz')
         activation_batch = list(np.load(activation_file)['dropouts'])
         all_activations.extend(activation_batch)
-
+    all_activations = np.array(all_activations)
+    all_activations = all_activations[load_train_predictions_from_disk(dataset)]
     return all_activations
 
+def load_train_predictions_from_disk(dataset: Dataset):
+    train_image_ids, _ = dataset.train_test_image_ids()
+    index = 0
+    true_predictions_indexes = []
+    for image_id in train_image_ids:
+        corrects = load_correct_predictions_of(image_id)
+        for predict in corrects:
+            if predict:
+                true_predictions_indexes.append(index)
+            index += 1
+    return np.array(true_predictions_indexes)
 
 def load_activations_of(image_id) -> np.ndarray:
     return np.load(activation_path(f'{image_id}.npz'))['dropouts']

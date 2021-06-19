@@ -24,7 +24,7 @@ def discover_concepts(configuration: Configuration, dataset: Dataset) -> None:
 
     # TODO: Why these exact values?
     #       Maybe we can move them to the configuration object?
-    min_imgs = 10
+    min_imgs = 1
     max_imgs = 40
 
     cluster_ids, all_costs, centers = load_cluster_metrics(configuration)
@@ -36,18 +36,18 @@ def discover_concepts(configuration: Configuration, dataset: Dataset) -> None:
         relevant_indices = np.where(cluster_ids == cluster_id)[0]
         num_occurrences = len(relevant_indices)
 
-        if num_occurrences <= min_imgs:
+        if num_occurrences < min_imgs:
             continue
 
         costs = all_costs[relevant_indices]
         k_nearest_concept_indices = relevant_indices[np.argsort(costs)[:max_imgs]]
-
-        if _cluster_accuracy_too_low(
-            index_mapping,
-            k_nearest_concept_indices,
-            configuration
-        ):
-            continue
+        #
+        # if _cluster_accuracy_too_low(
+        #     index_mapping,
+        #     k_nearest_concept_indices,
+        #     configuration
+        # ):
+        #     continue
 
         concept_id = len(concepts) + 1
         concept = (concept_id, k_nearest_concept_indices, centers[cluster_id], cluster_id)

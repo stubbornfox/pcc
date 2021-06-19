@@ -3,7 +3,8 @@ from __future__ import annotations
 from os.path import join
 
 import numpy as np
-from PIL.Image import Image, open
+from PIL import Image
+from PIL.Image import open
 from matplotlib import pyplot as plt
 from skimage.segmentation import slic, mark_boundaries
 
@@ -31,10 +32,11 @@ def view_source_image(image_id: int, resize=False) -> None:
     plt.show()
 
 
-def view_segments_of(image_id: int) -> None:
+def view_segments_of(image_id: int, indexes=[]) -> None:
     """Displays all segments of the image, as they were passed to the network"""
     segments = load_segments_of(image_id)
-
+    if len(indexes) > 0:
+        segments = segments[indexes]
     fig, ax = plt.subplots(4, 4, figsize=(10, 10), sharex=True, sharey=True)
     index = 0
 
@@ -120,3 +122,33 @@ def open_source_image(image_id) -> Image:
     path = dataset.path(join('images', image_name))
 
     return open(path)
+
+def view_concepts_of(cluster_id):
+    """Displays a figure for each concept found on disk"""
+    concepts = load_concepts(configuration)
+    image_ids, _ = dataset.train_test_image_ids()
+    index_mapping = global_index_mapping(image_ids)
+
+    for i, (_, k_nearest_concept_indices, _, i_cluster_id) in enumerate(concepts):
+        if int(cluster_id) == (i_cluster_id):
+            segments = []
+            index_mappings = index_mapping[k_nearest_concept_indices[:10]]
+            for _, image_id, local_segment_id in index_mappings:
+                segments_of_image = load_segments_of(image_id)
+                segment = segments_of_image[local_segment_id]
+                segments.append(segment)
+
+            index = 0
+
+            fig, ax = plt.subplots(6, 7, figsize=(10, 10), sharex=True, sharey=True)
+            for segment in segments:
+                x, y = int(index / 7), (index % 7)
+                image = Image.fromarray(segment)
+                ax[x, y].imshow(image)
+                index += 1
+
+            for segments in ax.ravel():
+                segments.set_axis_off()
+
+            plt.tight_layout()
+            plt.show()

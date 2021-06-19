@@ -24,3 +24,33 @@ def display_graph(elements: list, root_id: str):
         )
     ])
     app.run_server(debug=True)
+
+def display_decision_tree(elements: list, root_id: str):
+    app.layout = html.Div([
+        cyto.Cytoscape(
+            id='decision-tree-visualization',
+            style={'width': '100vw', 'height': '100vh'},
+            layout={
+                'name': 'cose',
+                'animate': True,
+                'roots': f'[id="{root_id}"]',
+
+            },
+            elements=elements,
+            stylesheet=[
+                {
+                    'selector': 'edge',
+                    'style': {
+                        'label': 'data(weight)'
+                    }
+                },
+                {
+                    'selector': 'node',
+                    'style': {
+                        'label': 'data(weight)'
+                    }
+                },
+            ]
+        )
+    ])
+    app.run_server(debug=True)
