@@ -26,19 +26,17 @@ def get_graph_data(dataset: Dataset, target_id: int = None):
     edges = []
     cluster_previews = dict()
 
-    indexes = load_train_predictions_from_disk(dataset)
-    print(indexes)
+    global_indexes_in_segments = load_train_predictions_from_disk(dataset)
 
     print('finding related clusters...')
-    related_cluster_ids = _find_related_clusters(target_id, concepts, index_mapping, classes_per_image_id, indexes)
+    related_cluster_ids = _find_related_clusters(target_id, concepts, index_mapping, classes_per_image_id, global_indexes_in_segments)
     related_class_ids = set()
 
     print('computing edges & cluster previews...')
-
     for _, k_nearest_concept_indices, _, cluster_id in concepts:
         if cluster_id not in related_cluster_ids:
             continue
-        concept_mapping = index_mapping[indexes[k_nearest_concept_indices]]
+        concept_mapping = index_mapping[global_indexes_in_segments[k_nearest_concept_indices]]
         cluster_previews[cluster_id] = _build_cluster_preview(concept_mapping)
 
         for _, image_id, _ in concept_mapping:
@@ -50,25 +48,25 @@ def get_graph_data(dataset: Dataset, target_id: int = None):
 
 def get_cluster_previews(concept_ids, dataset):
     concepts = load_concepts(dataset.configuration)
-    indexes = load_train_predictions_from_disk(dataset)
+    global_indexes_in_segments = load_train_predictions_from_disk(dataset)
     image_ids, _ = dataset.train_test_image_ids()
     print('loading concept mappings from disk...')
     index_mapping = global_index_mapping(image_ids)
     cluster_previews = dict()
     concepts = np.array(concepts, dtype=object)[concept_ids]
     for concept_id, k_nearest_concept_indices, _, cluster_id in concepts:
-        concept_mapping = index_mapping[indexes[k_nearest_concept_indices]]
+        concept_mapping = index_mapping[global_indexes_in_segments[k_nearest_concept_indices]]
         cluster_previews[concept_id-1] = _build_cluster_preview(concept_mapping)
 
     return cluster_previews
 
-def _find_related_clusters(target_id, concepts, index_mapping, classes_per_image_id, indexes=[]) -> set[int]:
+def _find_related_clusters(target_id, concepts, index_mapping, classes_per_image_id, global_indexes_in_segments=[]) -> set[int]:
     if target_id is None:
         return set([cluster_id for _, _, _, cluster_id in concepts])
 
     related_cluster_ids = set()
     for _, k_nearest_concept_indices, _, cluster_id in concepts:
-        concept_mapping = index_mapping[indexes[k_nearest_concept_indices]]
+        concept_mapping = index_mapping[global_indexes_in_segments[k_nearest_concept_indices]]
 
         for _, image_id, _ in concept_mapping:
             class_id = classes_per_image_id[image_id]
