@@ -144,4 +144,4 @@ data/
 .pkl
 
 preprocess-data/
-!data/checkpoints/tree/2000_200_None.pkl
+!tree_model.pkl
