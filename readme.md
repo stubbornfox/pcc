@@ -24,3 +24,10 @@ The high level steps needed for the training are listed and described in
 detailed actions.
 
 All supporting code lives in the `utils/` directory.
+## Predict bird
+
+- id: `run python predict.py 1` 
+
+- url: `run python predict.py "https://live.staticflickr.com/65535/40705400433_d416c53cee_k.jpg"`
+
+Open dash at `http://127.0.0.1:8050/` to see the explanation
