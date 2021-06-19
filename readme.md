@@ -25,6 +25,7 @@ detailed actions.
 
 All supporting code lives in the `utils/` directory.
 ## Predict bird
+The tree model was included so you don't need to train to predict bird.
 
 - id: `run python predict.py 1` 
 
