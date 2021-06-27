@@ -100,4 +100,5 @@ def _image_node_style(data_uri, size):
         'background-clip': 'none',
         'background-image-containment': 'over',
         'background-fit': 'contain',
+        'font-size': 50,
     }
