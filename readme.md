@@ -37,10 +37,10 @@ inside that folder.
 
 After successfully running `train.py`, the prediction can be done as follows:
 
-- id: `run python predict.py 1`, where one provides a valid image id, which can 
+- id: run `python predict.py 1`, where one provides a valid image id, which can 
   be obtained by looking at `data/CUB_200_2011/images.txt`.
 
-- url: `run python predict.py "https://live.staticflickr.com/65535/40705400433_d416c53cee_k.jpg"`, where the
+- url: run `python predict.py "https://live.staticflickr.com/65535/40705400433_d416c53cee_k.jpg"`, where the
   url points to any image file that containing a bird out of the 200 classes 
   that the model was trained upon. 
 
