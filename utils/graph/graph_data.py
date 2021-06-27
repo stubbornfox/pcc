@@ -54,11 +54,21 @@ def get_cluster_previews(concept_ids, dataset):
     index_mapping = global_index_mapping(image_ids)
     cluster_previews = dict()
     concepts = np.array(concepts, dtype=object)[concept_ids]
+    related_class_ids = set()
+    edges = []
+    classes_per_image_id = dataset.classes_per_image_id(True, True)
     for concept_id, k_nearest_concept_indices, _, cluster_id in concepts:
         concept_mapping = index_mapping[global_indexes_in_segments[k_nearest_concept_indices]]
         cluster_previews[concept_id-1] = _build_cluster_preview(concept_mapping)
+        concept_mapping = index_mapping[global_indexes_in_segments[k_nearest_concept_indices]]
+        class_ids = set()
+        for _, image_id, _ in concept_mapping:
+            class_id = classes_per_image_id[image_id]
+            if class_id not in class_ids:
+                related_class_ids.add((class_id, image_id))
+                edges.append((concept_id-1, class_id))
 
-    return cluster_previews
+    return cluster_previews, related_class_ids, edges
 
 def _find_related_clusters(target_id, concepts, index_mapping, classes_per_image_id, global_indexes_in_segments=[]) -> set[int]:
     if target_id is None:

@@ -79,10 +79,11 @@ def edge(source: str, target: str):
     }
 
 def edge_weight(source: str, target: str, weight = 0):
-    if weight > 0.85:
+    if weight:
         weight = '✅'
     else:
         weight = '❌'
+    # weight = ''
     return {
         'data': {'source': source, 'target': target, 'weight': weight},
     }
