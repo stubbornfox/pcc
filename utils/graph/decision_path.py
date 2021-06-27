@@ -1,4 +1,3 @@
-from config import dataset
 from utils.graph.framework import display_decision_tree
 from utils.graph.graph_data import get_cluster_previews, image_segment
 from utils.graph.nodes import edge_weight, class_node, edge, cluster_node, class_node_id, cluster_node_id, segment_node_id, segment_node, class_node_image_src

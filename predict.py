@@ -2,7 +2,7 @@ import sys
 from PIL import Image
 import urllib
 from config import dataset
-from decision_path import draw_decision_path
+from utils.graph.decision_path import draw_decision_path
 
 
 if __name__ == "__main__":
