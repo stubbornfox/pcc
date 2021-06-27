@@ -20,15 +20,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="28996273-d3ad-4646-b594-2d179f640ff4" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/decision_path_with_concept.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/decision_path.py" beforeDir="false" afterPath="$PROJECT_DIR$/decision_path.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/predict.py" beforeDir="false" afterPath="$PROJECT_DIR$/predict.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/steps/s2_interpret_segments.py" beforeDir="false" afterPath="$PROJECT_DIR$/steps/s2_interpret_segments.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/steps/s5_build_decision_tree.py" beforeDir="false" afterPath="$PROJECT_DIR$/steps/s5_build_decision_tree.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tree_model.pkl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/graph/graph_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/graph/graph_data.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utils/graph/nodes.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/graph/nodes.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -138,7 +130,7 @@
       <workItem from="1624082822980" duration="4972000" />
       <workItem from="1624275646734" duration="3918000" />
       <workItem from="1624457902570" duration="1844000" />
-      <workItem from="1624746755386" duration="8286000" />
+      <workItem from="1624746755386" duration="8488000" />
     </task>
     <servers />
   </component>

@@ -79,7 +79,7 @@ def edge(source: str, target: str):
     }
 
 def edge_weight(source: str, target: str, weight = 0):
-    if weight:
+    if weight >= 0.85:
         weight = '✅'
     else:
         weight = '❌'
