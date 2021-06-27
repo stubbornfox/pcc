@@ -45,7 +45,7 @@ def draw_decision_path(image_id, dataset):
         bird_segments.append(image_segment(local_segment_id, segments))
 
 
-    cluster_previews = get_cluster_previews(concept_ids, dataset)
+    cluster_previews, related_class_ids, edge_id_pairs = get_cluster_previews(concept_ids, dataset)
 
     cluster_nodes = [
         cluster_node(cluster_id, preview_image, weight="Similarity: {:.2f}".format(weight))
@@ -58,9 +58,15 @@ def draw_decision_path(image_id, dataset):
         for segment_id, bird_segment in zip(local_segment_ids, bird_segments)
     ]
 
+    class_nodes = [class_node(class_id) for class_id, image_id in related_class_ids]
+    for class_nodex_i in class_nodes:
+        label = class_nodex_i['data']['label']
+        class_nodex_i['data']['weight'] = label
+
     edges = []
 
     for segment_id, concept_id, weight in zip(local_segment_ids, concept_ids, weights):
+        print(concept_id)
         edges.append(edge_weight(
             source=segment_node_id(segment_id),
             target=cluster_node_id(concept_id),
@@ -73,9 +79,16 @@ def draw_decision_path(image_id, dataset):
             target=segment_node_id(segment_id),
         ))
 
+    for cluster_index, class_index in edge_id_pairs:
+        print(cluster_index, class_index)
+        edges.append(edge(
+            source=class_node_id(class_index),
+            target=cluster_node_id(cluster_index),
+        ))
+
     display_decision_tree(
         root_id=root_id,
-        elements=[bird_node] + cluster_nodes + segment_nodes + edges
+        elements=[bird_node] + cluster_nodes + class_nodes + segment_nodes + edges
     )
 
 # draw_decision_path(target_bird_id, dataset)

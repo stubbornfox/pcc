@@ -79,10 +79,11 @@ def edge(source: str, target: str):
     }
 
 def edge_weight(source: str, target: str, weight = 0):
-    if weight > 0.85:
+    if weight >= 0.85:
         weight = '✅'
     else:
         weight = '❌'
+    # weight = ''
     return {
         'data': {'source': source, 'target': target, 'weight': weight},
     }
@@ -99,4 +100,5 @@ def _image_node_style(data_uri, size):
         'background-clip': 'none',
         'background-image-containment': 'over',
         'background-fit': 'contain',
+        'font-size': 50,
     }

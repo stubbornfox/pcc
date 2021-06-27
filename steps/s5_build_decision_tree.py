@@ -197,10 +197,7 @@ def tree_model_file(c: Configuration):
 
 
 def load_tree_model(configuration: Configuration) -> RandomForestClassifier:
-  file_name = 'tree_model.pkl'
-  if not exists(file_name):
-    file_name = tree_model_file(configuration)
-    print('load from tree data')
+  file_name = tree_model_file(configuration)
   with open(file_name, 'rb') as file:
     return pickle.load(file)
 

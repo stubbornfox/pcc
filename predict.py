@@ -6,10 +6,11 @@ from decision_path import draw_decision_path
 
 
 if __name__ == "__main__":
-  bird = str(sys.argv[1])
-  if bird.isdigit():
-    bird = int(bird)
-  else:
-    bird = Image.open(urllib.request.urlopen(bird))
+  for arg in sys.argv[1:]:
+    bird = str(arg)
+    if bird.isdigit():
+      bird = int(bird)
+    else:
+      bird = Image.open(urllib.request.urlopen(bird))
 
-  draw_decision_path(bird, dataset)
+    draw_decision_path(bird, dataset)
