@@ -23,7 +23,7 @@ def display_graph(elements: list, root_id: str):
             elements=elements
         )
     ])
-    app.run_server(debug=True)
+    app.run_server(debug=False)
 
 def display_decision_tree(elements: list, root_id: str):
     app.layout = html.Div([
@@ -53,4 +53,4 @@ def display_decision_tree(elements: list, root_id: str):
             ]
         )
     ])
-    app.run_server(debug=True)
+    app.run_server(debug=False)
